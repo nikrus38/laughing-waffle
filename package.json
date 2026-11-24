@@ -1,0 +1,61 @@
+{
+  "name": "laughing-waffle",
+  "version": "1.0.0",
+  "description": "Telegram Mini App для демонстрации концепции \"Финуниверситета 4.0\".",
+  "type": "module",
+  "main": "dist/main.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview-build": "vite preview --outDir dist",
+    "check:data": "node scripts/checkData.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nikrus38/laughing-waffle.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nikrus38/laughing-waffle/issues"
+  },
+  "homepage": "https://github.com/nikrus38/laughing-waffle#readme",
+  "dependencies": {
+    "@telegram-apps/sdk-react": "^3.3.9",
+    "@tma.js/bridge": "^2.3.3",
+    "@tma.js/transformers": "^1.2.0",
+    "@tma.js/types": "^1.0.2",
+    "autoprefixer": "^10.7.0",
+    "postcss": "^8.5.33",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.6",
+    "recharts": "^3.11.1",
+    "tailwindcss": "^4.3.5",
+    "zustand": "^5.1.0"
+  },
+  "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^8.0.0",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "eslint": "^10.15.0",
+    "jsdom": "^31.0.1",
+    "prettier": "^3.10.1",
+    "typescript": "^7.0.2",
+    "vite": "^5.4.21",
+    "vitest": "^2.1.9"
+  }
+}
