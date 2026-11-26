@@ -122,6 +122,27 @@ def test_register_creates_user_and_twin(client):
 
 
 @pytest.mark.django_db
+def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
+    from core import seed_data
+    from core.models import TaskApplication
+
+    module = Micromodule.objects.get(code="mm-3")
+    api.post(f"/api/modules/{module.code}/complete/", data={}, content_type="application/json")
+
+    task = PartnerTask.objects.first()
+    api.post(f"/api/tasks/{task.code}/apply/", data={}, content_type="application/json")
+    assert TaskApplication.objects.filter(user=catalog).exists()
+
+    response = api.post("/api/demo/reset/", data={}, content_type="application/json")
+    assert response.status_code == 200
+
+    twin = Twin.objects.get(user=catalog)
+    assert twin.completed_modules == seed_data.DEMO_STUDENT["completed_modules"]
+    assert not TaskApplication.objects.filter(user=catalog).exists()
+    assert LedgerEntry.objects.filter(user=catalog).count() == len(seed_data.STARTER_LEDGER)
+
+
+@pytest.mark.django_db
 def test_decompose_returns_cases(api):
     response = api.post(
         "/api/decompose/",

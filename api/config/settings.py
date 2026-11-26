@@ -20,6 +20,10 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
+# В локальной демонстрации разрешаем открыть сайт по IP из Wi-Fi / с телефона.
+if DEBUG and not os.environ.get("DJANGO_ALLOWED_HOSTS"):
+    ALLOWED_HOSTS = ["*"]
+
 INSTALLED_APPS = [
     "django.contrib.admin",
     "django.contrib.auth",
@@ -132,8 +136,8 @@ REST_FRAMEWORK = {
 # Демо-настройки PWA
 PWA_NAME = "ФинТвин — Университет 4.0"
 PWA_SHORT_NAME = "ФинТвин"
-PWA_THEME_COLOR = "#123a63"
-PWA_BACKGROUND_COLOR = "#f4f6fa"
+PWA_THEME_COLOR = "#233e76"
+PWA_BACKGROUND_COLOR = "#f5f7fa"
 
 TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 
