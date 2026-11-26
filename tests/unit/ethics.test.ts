@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { applyEthicsFilter, createEthicsDecision } from '../../src/domain/ethics';
+import {
+  applyEthicsFilter,
+  createEthicsDecision,
+  ensureStretchInTop3,
+} from '../../src/domain/ethics';
 
 describe('Ethics Filter Functions', () => {
   it('should apply ethics filter to candidates', () => {
@@ -53,5 +57,41 @@ describe('Ethics Filter Functions', () => {
     
     // ID должны быть уникальными
     expect(decision1.id).not.toBe(decision2.id);
+  });
+
+  it('MATCH-001: добавляет задачу на вырост, не дублируя её', () => {
+    const matches = [
+      { taskId: 'easy-1', title: 'Лёгкая 1', isStretch: false, score: 90 },
+      { taskId: 'easy-2', title: 'Лёгкая 2', isStretch: false, score: 80 },
+      { taskId: 'easy-3', title: 'Лёгкая 3', isStretch: false, score: 70 },
+      { taskId: 'stretch', title: 'На вырост', isStretch: true, score: 40 },
+    ];
+
+    const { ordered, decision } = ensureStretchInTop3(matches);
+
+    // Все задачи сохранились ровно по одному разу
+    expect(ordered).toHaveLength(matches.length);
+    expect(new Set(ordered.map((m) => m.taskId)).size).toBe(matches.length);
+
+    // В первой тройке есть задача на вырост
+    expect(ordered.slice(0, 3).some((m) => m.isStretch)).toBe(true);
+
+    // Решение записано с правилом и ценностью
+    expect(decision).not.toBeNull();
+    expect(decision?.ruleId).toBe('MATCH-001');
+    expect(decision?.valueIds).toContain('excellence');
+  });
+
+  it('MATCH-001: не меняет порядок, если задача на вырост уже в топ-3', () => {
+    const matches = [
+      { taskId: 'a', title: 'A', isStretch: true, score: 90 },
+      { taskId: 'b', title: 'B', isStretch: false, score: 80 },
+      { taskId: 'c', title: 'C', isStretch: false, score: 70 },
+    ];
+
+    const { ordered, decision } = ensureStretchInTop3(matches);
+
+    expect(ordered.map((m) => m.taskId)).toEqual(['a', 'b', 'c']);
+    expect(decision).toBeNull();
   });
 });

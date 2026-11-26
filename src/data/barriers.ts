@@ -1,59 +1,195 @@
 import { Barrier } from '../domain/types';
 
-// Моковые данные для барьеров (экспертная оценка команды)
+/**
+ * Барьеры кооперации вуза и индустрии.
+ * MOCK: интенсивность (severity 0–3) — экспертная оценка команды,
+ * а не результат исследования. Так и подписано в интерфейсе.
+ * Реальные в проекте только 34,7% и 55% из исходных данных задания.
+ */
 export const mockBarriers: Barrier[] = [
+  // --- Административные (7) ---
   {
     id: 'barrier-1',
     category: 'administrative',
     title: 'Долгое согласование договоров',
     stage: 'agreement',
     severity: 3,
-    solvedBy: 'diagnostics',
-    note: 'Оценка команды, не результат исследования. Реальное время согласования 2-3 месяца.'
+    solvedBy: 'decomposer',
+    note: 'Оценка команды. Согласование одного проекта с партнёром занимает месяцы, а окно практики — недели.',
   },
   {
     id: 'barrier-2',
-    category: 'informational',
-    title: 'Отсутствие единой платформы обмена данными',
-    stage: 'search',
-    severity: 2,
-    solvedBy: 'twin',
-    note: 'Оценка команды. Студенты используют до 5 разных систем для одной задачи.'
-  },
-  {
-    id: 'barrier-3',
-    category: 'cultural',
-    title: 'Недоверие к цифровым решениям',
-    stage: 'launch',
-    severity: 2,
-    solvedBy: 'ethics',
-    note: 'Оценка команды. Преподаватели предпочитают традиционные методы.'
-  },
-  {
-    id: 'barrier-4',
     category: 'administrative',
     title: 'Сложности с интеллектуальной собственностью',
     stage: 'scale',
     severity: 3,
     solvedBy: 'patents',
-    note: 'Оценка команды. Неясные правила владения результатами НИОКР.'
+    note: 'Оценка команды. Неясно, кому принадлежат результаты студенческого проекта и можно ли их тиражировать.',
+  },
+  {
+    id: 'barrier-3',
+    category: 'administrative',
+    title: 'Разные регламенты у факультетов',
+    stage: 'launch',
+    severity: 2,
+    solvedBy: 'decomposer',
+    note: 'Оценка команды. Одна задача партнёра оформляется по-разному на разных кафедрах.',
+  },
+  {
+    id: 'barrier-4',
+    category: 'administrative',
+    title: 'Нет быстрого канала «задача → учебный кейс»',
+    stage: 'search',
+    severity: 2,
+    solvedBy: 'decomposer',
+    note: 'Оценка команды. Запрос партнёра попадает к методисту и может лежать без движения семестр.',
   },
   {
     id: 'barrier-5',
+    category: 'administrative',
+    title: 'Формальная отчётность вместо результата',
+    stage: 'evaluation',
+    severity: 2,
+    solvedBy: 'wallet',
+    note: 'Оценка команды. Оценивается заполненность документов, а не решённая задача.',
+  },
+  {
+    id: 'barrier-6',
+    category: 'administrative',
+    title: 'Нагрузка преподавателя не учитывает наставничество',
+    stage: 'launch',
+    severity: 3,
+    solvedBy: 'twin',
+    note: 'Оценка команды. Сопровождение проектов идёт «сверх» часов, поэтому им занимаются энтузиасты.',
+  },
+  {
+    id: 'barrier-7',
+    category: 'administrative',
+    title: 'Нет единого окна для партнёра',
+    stage: 'search',
+    severity: 2,
+    solvedBy: 'home',
+    note: 'Оценка команды. Партнёр не понимает, к кому идти с задачей и что он получит на выходе.',
+  },
+
+  // --- Информационные (7) ---
+  {
+    id: 'barrier-8',
+    category: 'informational',
+    title: 'Отсутствие единой платформы обмена данными',
+    stage: 'search',
+    severity: 2,
+    solvedBy: 'twin',
+    note: 'Оценка команды. Для одной задачи студент использует несколько несвязанных систем.',
+  },
+  {
+    id: 'barrier-9',
     category: 'informational',
     title: 'Несовместимость форматов данных',
     stage: 'evaluation',
     severity: 2,
     solvedBy: 'diagnostics',
-    note: 'Оценка команды. Разные факультеты используют разные стандарты.'
+    note: 'Оценка команды. Факультеты ведут данные в разных стандартах, сводить их приходится вручную.',
   },
   {
-    id: 'barrier-6',
+    id: 'barrier-10',
+    category: 'informational',
+    title: 'Непрозрачный подбор задач студенту',
+    stage: 'search',
+    severity: 3,
+    solvedBy: 'matcher',
+    note: 'Оценка команды. Студент не понимает, почему ему предложили именно эту задачу.',
+  },
+  {
+    id: 'barrier-11',
+    category: 'informational',
+    title: 'Компетенции не видны работодателю',
+    stage: 'evaluation',
+    severity: 3,
+    solvedBy: 'twin',
+    note: 'Оценка команды. В резюме — оценки, а не подтверждённые навыки и проекты.',
+  },
+  {
+    id: 'barrier-12',
+    category: 'informational',
+    title: 'Нет обратной связи по итогам проекта',
+    stage: 'evaluation',
+    severity: 2,
+    solvedBy: 'wallet',
+    note: 'Оценка команды. После сдачи проекта студент не узнаёт, что было хорошо и что исправить.',
+  },
+  {
+    id: 'barrier-13',
+    category: 'informational',
+    title: 'Тренды рынка труда не доходят до кафедр',
+    stage: 'scale',
+    severity: 2,
+    solvedBy: 'patents',
+    note: 'Оценка команды. Программы обновляются медленнее, чем меняется спрос.',
+  },
+  {
+    id: 'barrier-14',
+    category: 'informational',
+    title: 'Разные версии одной задачи у партнёра и вуза',
+    stage: 'agreement',
+    severity: 2,
+    solvedBy: 'decomposer',
+    note: 'Оценка команды. Партнёр и кафедра по-разному понимают результат, ожидания расходятся.',
+  },
+
+  // --- Культурные (6) ---
+  {
+    id: 'barrier-15',
+    category: 'cultural',
+    title: 'Недоверие к цифровым решениям',
+    stage: 'launch',
+    severity: 2,
+    solvedBy: 'ethics',
+    note: 'Оценка команды. Часть преподавателей предпочитает проверенные методы и не доверяет алгоритмам.',
+  },
+  {
+    id: 'barrier-16',
     category: 'cultural',
     title: 'Сопротивление изменениям',
     stage: 'search',
     severity: 3,
     solvedBy: 'trajectory',
-    note: 'Оценка команды. Сложности внедрения новых подходов.'
-  }
+    note: 'Оценка команды. Новые форматы воспринимаются как дополнительная нагрузка.',
+  },
+  {
+    id: 'barrier-17',
+    category: 'cultural',
+    title: 'Страх ошибки у студента',
+    stage: 'launch',
+    severity: 2,
+    solvedBy: 'twin',
+    note: 'Оценка команды. Студенты выбирают простые задачи, чтобы не испортить средний балл.',
+  },
+  {
+    id: 'barrier-18',
+    category: 'cultural',
+    title: 'Гонка за баллами вместо развития',
+    stage: 'evaluation',
+    severity: 3,
+    solvedBy: 'wallet',
+    note: 'Оценка команды. Награда становится целью, а не следствием вклада.',
+  },
+  {
+    id: 'barrier-19',
+    category: 'cultural',
+    title: 'Партнёр воспринимается как спонсор, а не соавтор',
+    stage: 'scale',
+    severity: 2,
+    solvedBy: 'trajectory',
+    note: 'Оценка команды. Индустрия участвует деньгами, но не влияет на содержание программ.',
+  },
+  {
+    id: 'barrier-20',
+    category: 'cultural',
+    title: 'Нет привычки фиксировать авторство идей',
+    stage: 'evaluation',
+    severity: 2,
+    solvedBy: 'wallet',
+    note: 'Оценка команды. Идеи студенческих проектов теряются или присваиваются без указания автора.',
+  },
 ];

@@ -8,3 +8,13 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <App />
   </React.StrictMode>,
 );
+
+// Service worker нужен для установки PWA и офлайн-оболочки.
+// В dev-режиме Vite не отдаёт собранные ассеты, поэтому регистрируем только в проде.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {
+      /* офлайн-режим необязателен: интерфейс продолжает работать онлайн */
+    });
+  });
+}

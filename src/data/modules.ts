@@ -1,6 +1,7 @@
 import { Micromodule } from '../domain/types';
 
-// Моковые микромодули
+// MOCK: микромодули демонстрационные. Длительность 15–45 минут, как в задании.
+// valueTags ссылаются на id из src/data/values.ts.
 export const mockMicromodules: Micromodule[] = [
   {
     id: 'mm-1',
@@ -8,10 +9,8 @@ export const mockMicromodules: Micromodule[] = [
     minutes: 30,
     difficulty: 2,
     kind: 'learn',
-    gains: {
-      'data': 15
-    },
-    valueTags: ['learning'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
+    gains: { data: 15 },
+    valueTags: ['excellence'],
   },
   {
     id: 'mm-2',
@@ -19,58 +18,214 @@ export const mockMicromodules: Micromodule[] = [
     minutes: 45,
     difficulty: 3,
     kind: 'learn',
-    gains: {
-      'ai': 20,
-      'data': 10
-    },
-    valueTags: ['innovation'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
+    gains: { ai: 20, data: 10 },
+    valueTags: ['innovation'],
   },
   {
     id: 'mm-3',
-    title: 'Финансовая математика',
+    title: 'Финансовая математика: базовый уровень',
     minutes: 40,
     difficulty: 2,
     kind: 'learn',
-    gains: {
-      'finance': 25
-    },
-    valueTags: ['expertise'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
+    gains: { finance: 25 },
+    valueTags: ['excellence'],
   },
   {
     id: 'mm-4',
-    title: 'Практика анализа финансовых отчетов',
-    minutes: 60,
+    title: 'Практика анализа финансовых отчётов',
+    minutes: 40,
     difficulty: 3,
     kind: 'practice',
-    gains: {
-      'finance': 20,
-      'research': 15
-    },
-    valueTags: ['practice'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
+    gains: { finance: 20, research: 15 },
+    valueTags: ['excellence', 'responsibility'],
   },
   {
     id: 'mm-5',
-    title: 'Разработка чат-бота с использованием NLP',
-    minutes: 90,
+    title: 'Разработка чат-бота на готовом API',
+    minutes: 45,
     difficulty: 4,
     kind: 'practice',
-    gains: {
-      'code': 25,
-      'ai': 20,
-      'comm': 10
-    },
-    valueTags: ['innovation', 'technology'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
+    gains: { code: 25, ai: 20, comm: 10 },
+    valueTags: ['innovation'],
   },
   {
     id: 'mm-6',
-    title: 'Наставничество по основам программирования',
-    minutes: 120,
+    title: 'Наставничество: разбор кода первокурсника',
+    minutes: 30,
     difficulty: 2,
     kind: 'mentor',
-    gains: {
-      'lead': 30,
-      'comm': 20
-    },
-    valueTags: ['mentoring', 'community'] // [ВСТАВИТЬ ОФИЦИАЛЬНЫЕ ЦЕННОСТИ]
-  }
+    gains: { lead: 20, comm: 15 },
+    valueTags: ['collaboration', 'leadership'],
+  },
+  {
+    id: 'mm-7',
+    title: 'Визуализация данных в таблицах',
+    minutes: 20,
+    difficulty: 1,
+    kind: 'practice',
+    gains: { data: 12, comm: 5 },
+    valueTags: ['excellence'],
+  },
+  {
+    id: 'mm-8',
+    title: 'Статистика: проверка гипотез',
+    minutes: 35,
+    difficulty: 3,
+    kind: 'learn',
+    gains: { data: 15, research: 12 },
+    valueTags: ['excellence', 'responsibility'],
+  },
+  {
+    id: 'mm-9',
+    title: 'SQL для анализа данных',
+    minutes: 30,
+    difficulty: 2,
+    kind: 'practice',
+    gains: { data: 15, code: 10 },
+    valueTags: ['excellence'],
+  },
+  {
+    id: 'mm-10',
+    title: 'Основы кредитного риска',
+    minutes: 40,
+    difficulty: 3,
+    kind: 'learn',
+    gains: { finance: 20, research: 8 },
+    valueTags: ['responsibility'],
+  },
+  {
+    id: 'mm-11',
+    title: 'Python для финансовых расчётов',
+    minutes: 45,
+    difficulty: 3,
+    kind: 'practice',
+    gains: { code: 18, finance: 12 },
+    valueTags: ['excellence'],
+  },
+  {
+    id: 'mm-12',
+    title: 'Как объяснить модель бизнесу',
+    minutes: 25,
+    difficulty: 2,
+    kind: 'practice',
+    gains: { comm: 18, finance: 6 },
+    valueTags: ['collaboration', 'responsibility'],
+  },
+  {
+    id: 'mm-13',
+    title: 'ИИ-грамотность: что модель не умеет',
+    minutes: 20,
+    difficulty: 1,
+    kind: 'learn',
+    gains: { ai: 12, research: 6 },
+    valueTags: ['responsibility'],
+  },
+  {
+    id: 'mm-14',
+    title: 'Этика данных и приватность',
+    minutes: 25,
+    difficulty: 2,
+    kind: 'learn',
+    gains: { research: 10, comm: 8 },
+    valueTags: ['integrity', 'responsibility'],
+  },
+  {
+    id: 'mm-15',
+    title: 'Продуктовое мышление: от идеи до MVP',
+    minutes: 35,
+    difficulty: 3,
+    kind: 'learn',
+    gains: { entre: 20, comm: 8 },
+    valueTags: ['innovation', 'leadership'],
+  },
+  {
+    id: 'mm-16',
+    title: 'Публичное выступление с данными',
+    minutes: 30,
+    difficulty: 2,
+    kind: 'practice',
+    gains: { comm: 20, lead: 6 },
+    valueTags: ['leadership'],
+  },
+  {
+    id: 'mm-17',
+    title: 'Командная работа в проекте',
+    minutes: 25,
+    difficulty: 1,
+    kind: 'practice',
+    gains: { comm: 12, lead: 10 },
+    valueTags: ['collaboration'],
+  },
+  {
+    id: 'mm-18',
+    title: 'Антифрод: базовые сценарии',
+    minutes: 40,
+    difficulty: 3,
+    kind: 'learn',
+    gains: { data: 12, ai: 12, research: 6 },
+    valueTags: ['responsibility', 'integrity'],
+  },
+  {
+    id: 'mm-19',
+    title: 'Работа с открытыми данными',
+    minutes: 20,
+    difficulty: 1,
+    kind: 'practice',
+    gains: { data: 10, research: 8 },
+    valueTags: ['collaboration', 'responsibility'],
+  },
+  {
+    id: 'mm-20',
+    title: 'Дизайн доступных интерфейсов',
+    minutes: 30,
+    difficulty: 2,
+    kind: 'learn',
+    gains: { comm: 12, code: 8 },
+    valueTags: ['diversity', 'responsibility'],
+  },
+  {
+    id: 'mm-21',
+    title: 'Основы предпринимательства',
+    minutes: 35,
+    difficulty: 2,
+    kind: 'learn',
+    gains: { entre: 18, finance: 6 },
+    valueTags: ['innovation', 'leadership'],
+  },
+  {
+    id: 'mm-22',
+    title: 'Наставничество: как давать обратную связь',
+    minutes: 20,
+    difficulty: 1,
+    kind: 'mentor',
+    gains: { comm: 12, lead: 8 },
+    valueTags: ['collaboration', 'leadership'],
+  },
+  {
+    id: 'mm-23',
+    title: 'Патентный поиск и анализ трендов',
+    minutes: 40,
+    difficulty: 3,
+    kind: 'practice',
+    gains: { research: 18, data: 8 },
+    valueTags: ['innovation', 'excellence'],
+  },
+  {
+    id: 'mm-24',
+    title: 'Устойчивое финансирование: ESG-данные',
+    minutes: 35,
+    difficulty: 3,
+    kind: 'learn',
+    gains: { finance: 15, research: 10 },
+    valueTags: ['sustainability', 'responsibility'],
+  },
+  {
+    id: 'mm-25',
+    title: 'История российской финансовой инженерии',
+    minutes: 30,
+    difficulty: 1,
+    kind: 'learn',
+    gains: { finance: 10, research: 8, comm: 6 },
+    valueTags: ['patriotism'],
+  },
 ];

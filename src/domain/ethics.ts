@@ -128,3 +128,52 @@ export function createEthicsDecision(
     valueIds
   };
 }
+
+/**
+ * MATCH-001 → «Первенство»: в первой тройке рекомендаций минимум одна задача
+ * на вырост. Если все три лёгкие, самая лёгкая вытесняется лучшей «трудной».
+ * Возвращает переупорядоченный список и запись для этического журнала.
+ */
+export function ensureStretchInTop3(
+  matches: Array<{ taskId: string; title: string; isStretch: boolean; score: number }>
+): {
+  ordered: Array<{ taskId: string; title: string; isStretch: boolean; score: number }>;
+  decision: EthicsDecision | null;
+} {
+  const ordered = [...matches].sort((a, b) => b.score - a.score);
+  const top3 = ordered.slice(0, 3);
+
+  if (top3.some((match) => match.isStretch)) {
+    return { ordered, decision: null };
+  }
+
+  const stretchCandidate = ordered.find((match) => match.isStretch);
+  if (!stretchCandidate) {
+    // Нет ни одной задачи на вырост — правило применить нельзя
+    return { ordered, decision: null };
+  }
+
+  // Вытесняем самую слабую из первой тройки: она уходит ниже, но не пропадает
+  const displaced = top3[top3.length - 1]!;
+  const withoutStretch = ordered.filter((match) => match.taskId !== stretchCandidate.taskId);
+  const insertAt = Math.min(2, withoutStretch.length);
+  withoutStretch.splice(insertAt, 0, stretchCandidate);
+
+  const decision = createEthicsDecision(
+    'matcher',
+    'MATCH-001',
+    'В первую тройку добавлена задача на вырост',
+    top3.map((match) => ({ id: match.taskId, label: match.title })),
+    [
+      {
+        id: displaced.taskId,
+        reason: 'Все три задачи были лёгкими — самая простая вытеснена',
+        valueId: 'excellence',
+      },
+    ],
+    stretchCandidate.taskId,
+    ['excellence']
+  );
+
+  return { ordered: withoutStretch, decision };
+}

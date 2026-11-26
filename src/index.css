@@ -1,18 +1,169 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Tailwind CSS v4: подключается одной директивой @import */
+@import 'tailwindcss';
+
+/* ---- Дизайн-токены (брендбук Финуниверситета) ---- */
+:root {
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-muted: #eef1f5;
+  --ink: #193d57;
+  --ink-muted: #5f6f7e;
+  --brand: #233e76;
+  --brand-soft: #e6ebf5;
+  --gold: #d9a227;
+  --gold-soft: #fdf3dc;
+  --mint: #0198af;
+  --mint-soft: #e2f3f6;
+  --violet: #275e9f;
+  --violet-soft: #e7eef8;
+  --danger: #dd4b42;
+  --radius-sm: 12px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur: 200ms;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
 
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Golos Text', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #f5f7fa;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+h1,
+h2,
+h3,
+h4 {
+  font-family: 'Open Sans', 'Golos Text', system-ui, sans-serif;
 }
+
+/* Цифры в деньгах и процентах — табличные */
+.tnum {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Уважаем prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Безопасные зоны на мобильных */
+.safe-bottom {
+  padding-bottom: calc(0.5rem + var(--safe-bottom));
+}
+
+/* Мягкое появление страницы при переключении вкладок */
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.page-enter {
+  animation: page-enter 180ms var(--ease);
+}
+
+/* ---------- Светлая консоль (десктоп, паттерн dashboard) ---------- */
+.console-dark {
+  --dash-bg: #f5f7fa;
+  --dash-panel: #ffffff;
+  --dash-panel-2: #f7f9fc;
+  --dash-border: #e3e8f0;
+  --dash-text: #193d57;
+  --dash-muted: #64748b;
+  --dash-accent: #017a8c;
+  --dash-accent-soft: #e2f3f6;
+  --dash-gold: #b07d0a;
+  --dash-violet: #275e9f;
+  color: var(--dash-text);
+}
+
+.dash-panel {
+  background: var(--dash-panel);
+  border: 1px solid var(--dash-border);
+  border-radius: 14px;
+}
+
+.dash-panel-2 {
+  background: var(--dash-panel-2);
+  border: 1px solid var(--dash-border);
+  border-radius: 10px;
+}
+
+.dash-muted {
+  color: var(--dash-muted);
+}
+
+.dash-hr {
+  border-color: var(--dash-border);
+}
+
+.dash-segment {
+  background: var(--dash-panel-2);
+  border: 1px solid var(--dash-border);
+  border-radius: 9px;
+  padding: 3px;
+}
+
+.dash-segment button {
+  border-radius: 6px;
+  color: var(--dash-muted);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  transition: background 150ms var(--ease), color 150ms var(--ease);
+}
+
+.dash-segment button[aria-selected='true'],
+.dash-segment button[aria-pressed='true'] {
+  background: var(--dash-accent-soft);
+  color: var(--dash-accent);
+}
+
+.console-dark select {
+  background: var(--dash-panel-2);
+  border: 1px solid var(--dash-border);
+  color: var(--dash-text);
+  border-radius: 9px;
+  padding: 6px 10px;
+  font-size: 12px;
+  outline: none;
+}
+
+.console-dark select:focus {
+  border-color: var(--dash-accent);
+}
+
+.dash-link {
+  color: var(--dash-muted);
+  font-size: 11px;
+  font-weight: 500;
+  transition: color 150ms var(--ease);
+}
+
+.dash-link:hover {
+  color: var(--dash-accent);
+}
+
