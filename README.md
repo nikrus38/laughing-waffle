@@ -1,5 +1,7 @@
 # ФинТвин — MVP Университета 4.0
 
+[![CI](https://github.com/nikrus38/laughing-waffle/actions/workflows/ci.yml/badge.svg)](https://github.com/nikrus38/laughing-waffle/actions/workflows/ci.yml)
+
 Интерактивная модель Университета 4.0: цифровой двойник, ИИ-сват, FinCoin с проверяемым
 реестром и этика алгоритмов. Публичный сайт + консоль после входа, PWA и режим
 Telegram Mini App.
