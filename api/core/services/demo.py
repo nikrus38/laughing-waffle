@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from core import seed_data
 from core.models import EthicsDecision, LedgerEntry, TaskApplication, Twin
+from accounts.models import User
 from core.services.ledger import COIN_AMOUNTS, GENESIS_HASH, calculate_hash
 
 
@@ -81,3 +82,8 @@ def reset_demo(user) -> None:
         },
     )
     TaskApplication.objects.filter(user=user).delete()
+
+    # Демо всегда начинается со студента, даже если до сброса была роль партнёра
+    if user.role != User.Role.STUDENT:
+        user.role = User.Role.STUDENT
+        user.save(update_fields=["role"])

@@ -133,6 +133,9 @@ def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
     api.post(f"/api/tasks/{task.code}/apply/", data={}, content_type="application/json")
     assert TaskApplication.objects.filter(user=catalog).exists()
 
+    catalog.role = "partner"
+    catalog.save(update_fields=["role"])
+
     response = api.post("/api/demo/reset/", data={}, content_type="application/json")
     assert response.status_code == 200
 
@@ -140,6 +143,9 @@ def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
     assert twin.completed_modules == seed_data.DEMO_STUDENT["completed_modules"]
     assert not TaskApplication.objects.filter(user=catalog).exists()
     assert LedgerEntry.objects.filter(user=catalog).count() == len(seed_data.STARTER_LEDGER)
+
+    catalog.refresh_from_db()
+    assert catalog.role == "student"
 
 
 @pytest.mark.django_db
