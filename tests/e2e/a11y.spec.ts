@@ -11,7 +11,10 @@ function seriousViolations(results: Awaited<ReturnType<AxeBuilder['analyze']>>) 
     .map((violation) => ({
       id: violation.id,
       impact: violation.impact,
-      nodes: violation.nodes.map((node) => node.target.join(' ')),
+      nodes: violation.nodes.map((node) => ({
+        target: node.target.join(' '),
+        summary: node.failureSummary,
+      })),
     }));
 }
 

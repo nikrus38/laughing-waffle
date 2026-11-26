@@ -21,6 +21,7 @@ export default defineConfig({
     baseURL: 'http://127.0.0.1:8010',
     viewport: { width: 390, height: 844 },
     deviceScaleFactor: 2,
+    colorScheme: 'light',
     trace: 'retain-on-failure',
     screenshot: 'only-on-failure',
   },
