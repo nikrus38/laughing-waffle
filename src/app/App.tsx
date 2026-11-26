@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Layout from './Layout';
 import TelegramBridge from './TelegramBridge';
@@ -7,11 +7,11 @@ import Twin from '../features/twin/Twin';
 import Matcher from '../features/matcher/Matcher';
 import Wallet from '../features/wallet/Wallet';
 import Ethics from '../features/ethics/Ethics';
-import Diagnostics from '../features/diagnostics/Diagnostics';
-import Trajectory from '../features/trajectory/Trajectory';
-import Decomposer from '../features/decomposer/Decomposer';
-import Patents from '../features/patents/Patents';
-import Demo from '../features/demo/Demo';
+const Diagnostics = lazy(() => import('../features/diagnostics/Diagnostics'));
+const Trajectory = lazy(() => import('../features/trajectory/Trajectory'));
+const Decomposer = lazy(() => import('../features/decomposer/Decomposer'));
+const Patents = lazy(() => import('../features/patents/Patents'));
+const Demo = lazy(() => import('../features/demo/Demo'));
 import { api, ApiError } from '../shared/api/client';
 import { BootstrapPayload } from '../shared/api/types';
 import { useStore } from '../shared/store/useStore';
@@ -30,6 +30,10 @@ const Splash: React.FC = () => (
     </span>
     <p className="text-sm text-[color:var(--ink-muted)]">Загружаем консоль…</p>
   </div>
+);
+
+const RouteFallback: React.FC = () => (
+  <div className="py-16 text-center text-sm text-slate-500">????????? ???????</div>
 );
 
 const NotFound: React.FC = () => (
@@ -84,7 +88,8 @@ function App() {
     <Router basename={basename}>
       <TelegramBridge />
       <Layout>
-        <Routes>
+        <Suspense fallback={<RouteFallback />}>
+          <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/twin" element={<Twin />} />
           <Route path="/matcher" element={<Matcher />} />
@@ -96,7 +101,8 @@ function App() {
           <Route path="/patents" element={<Patents />} />
           <Route path="/demo" element={<Demo />} />
           <Route path="*" element={<NotFound />} />
-        </Routes>
+          </Routes>
+        </Suspense>
       </Layout>
     </Router>
   );

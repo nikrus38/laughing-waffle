@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 interface BeforeInstallPromptEvent extends Event {
   prompt: () => Promise<void>;
@@ -12,6 +13,7 @@ const STORAGE_KEY = 'fintwin-install-dismissed';
  * то есть установка реально доступна. На iOS события нет — там инструкция в лендинге.
  */
 const InstallPrompt: React.FC = () => {
+  const location = useLocation();
   const [deferred, setDeferred] = useState<BeforeInstallPromptEvent | null>(null);
   const [dismissed, setDismissed] = useState(
     () => window.localStorage.getItem(STORAGE_KEY) === '1',
@@ -26,11 +28,11 @@ const InstallPrompt: React.FC = () => {
     return () => window.removeEventListener('beforeinstallprompt', handler);
   }, []);
 
-  if (!deferred || dismissed) return null;
+  if (!deferred || dismissed || location.pathname !== '/') return null;
 
   return (
     <div
-      className="fixed bottom-[76px] left-1/2 z-30 w-[calc(100%-24px)] max-w-[456px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg"
+      className="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] left-1/2 z-30 w-[calc(100%-24px)] max-w-[456px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg"
       role="region"
       aria-label="Установка приложения"
     >

@@ -16,6 +16,7 @@ const Matcher: React.FC = () => {
   const user = useStore((s) => s.user);
   const tasks = useStore((s) => s.availableTasks);
   const skippedTaskIds = useStore((s) => s.skippedTaskIds);
+  const appliedTaskIds = useStore((s) => s.appliedTaskIds);
   const applyToTask = useStore((s) => s.applyToTask);
   const skipTask = useStore((s) => s.skipTask);
   const logEthicsDecision = useStore((s) => s.logEthicsDecision);
@@ -29,7 +30,9 @@ const Matcher: React.FC = () => {
     ranked: RankedTask[];
     decision: EthicsDecision | null;
   }>(() => {
-    const visible = tasks.filter((task) => !skippedTaskIds.includes(task.id));
+    const visible = tasks.filter(
+      (task) => !skippedTaskIds.includes(task.id) && !appliedTaskIds.includes(task.id),
+    );
     const withMatches = visible.map((task) => ({ task, match: calculateMatch(user, task) }));
 
     if (harder) {
@@ -57,7 +60,7 @@ const Matcher: React.FC = () => {
         .filter((item): item is RankedTask => Boolean(item)),
       decision: ethicsDecision,
     };
-  }, [tasks, skippedTaskIds, user, harder]);
+  }, [tasks, skippedTaskIds, appliedTaskIds, user, harder]);
 
   // Каждое срабатывание правила MATCH-001 попадает в журнал этики
   useEffect(() => {

@@ -4,6 +4,7 @@ import { useStore } from '../shared/store/useStore';
 import NavigationBar from '../shared/components/NavigationBar';
 import TopBar from '../shared/components/TopBar';
 import InstallPrompt from '../shared/components/InstallPrompt';
+import ConnectionBanner from '../shared/components/ConnectionBanner';
 import Sidebar from './Sidebar';
 
 interface LayoutProps {
@@ -26,6 +27,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
 
       <div className="lg:pl-[264px]">
         <TopBar />
+        <ConnectionBanner />
 
         <main className="mx-auto w-full max-w-[480px] px-4 pb-28 pt-4 lg:max-w-[1180px] lg:px-8 lg:pb-16 lg:pt-6">
           <div
