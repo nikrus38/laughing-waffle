@@ -5,6 +5,8 @@ import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 PROJECT_ROOT = BASE_DIR.parent
 
+from config.db import database_settings  # noqa: E402  (после BASE_DIR)
+
 SECRET_KEY = os.environ.get(
     "DJANGO_SECRET_KEY",
     "dev-only-unsafe-key-change-me-in-production",
@@ -69,10 +71,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 ASGI_APPLICATION = "config.asgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
-    }
+    "default": database_settings(BASE_DIR / "db.sqlite3"),
 }
 
 AUTH_USER_MODEL = "accounts.User"

@@ -33,6 +33,23 @@ npm install
 npm run dev        # http://localhost:3000, /api проксируется на Django :8000
 ```
 
+## База данных
+
+По умолчанию используется SQLite (`api/db.sqlite3`): демо запускается без установки
+сервера. Для PostgreSQL достаточно задать строку подключения — код не меняется.
+
+```powershell
+# пример: локальный PostgreSQL
+$env:DATABASE_URL = "postgresql://fintwin:password@127.0.0.1:5432/fintwin"
+
+.\.venv\Scripts\python.exe api\manage.py migrate
+.\.venv\Scripts\python.exe api\manage.py seed_demo
+```
+
+Поддерживаются `postgresql://`, `postgres://`, `psql://` и параметр `?sslmode=require`.
+Альтернатива — переменные `DB_ENGINE=postgres` + `POSTGRES_*` (см. `.env.example`).
+Драйвер `psycopg` уже в `api/requirements.txt`.
+
 ## Что внутри
 
 | Раздел | Адрес | Что показывает |
