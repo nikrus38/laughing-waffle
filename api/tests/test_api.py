@@ -182,6 +182,22 @@ def test_health_is_public(client):
 
 
 @pytest.mark.django_db
+def test_csrf_endpoint_sets_cookie(client):
+    response = client.get("/api/csrf/")
+    assert response.status_code == 200
+    assert "csrftoken" in response.cookies
+
+
+@pytest.mark.django_db
+def test_manifest_has_install_metadata(client):
+    data = client.get("/manifest.webmanifest").json()
+    assert data["display"] == "standalone"
+    assert len(data["icons"]) == 3
+    assert len(data["screenshots"]) == 2
+    assert data["display_override"][0] == "window-controls-overlay"
+
+
+@pytest.mark.django_db
 @pytest.mark.parametrize(
     "path",
     ["/features/", "/how/", "/ethics/", "/partners/", "/install/", "/faq/"],
