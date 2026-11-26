@@ -135,7 +135,10 @@ def console(request: HttpRequest, path: str = "") -> HttpResponse:
     index = _console_index()
     if not index.exists():
         return render(request, "web/console_missing.html", status=503)
-    return HttpResponse(index.read_text(encoding="utf-8"))
+    response = HttpResponse(index.read_text(encoding="utf-8"))
+    # HTML консоли не кэшируем: он ссылается на хэшированные ассеты новой сборки
+    response["Cache-Control"] = "no-cache, must-revalidate"
+    return response
 
 
 def console_assets(request: HttpRequest, path: str) -> HttpResponse:
@@ -145,7 +148,10 @@ def console_assets(request: HttpRequest, path: str) -> HttpResponse:
     if base.resolve() not in target.parents or not target.is_file():
         return HttpResponse(status=404)
     content_type = "application/javascript" if target.suffix == ".js" else "text/css"
-    return HttpResponse(target.read_bytes(), content_type=content_type)
+    response = HttpResponse(target.read_bytes(), content_type=content_type)
+    # Имена файлов содержат хэш — можно кэшировать навсегда.
+    response["Cache-Control"] = "public, max-age=31536000, immutable"
+    return response
 
 
 def manifest(request: HttpRequest) -> JsonResponse:
@@ -157,15 +163,35 @@ def manifest(request: HttpRequest) -> JsonResponse:
         "start_url": "/app/",
         "scope": "/",
         "display": "standalone",
+        "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
         "orientation": "portrait",
         "background_color": settings.PWA_BACKGROUND_COLOR,
         "theme_color": settings.PWA_THEME_COLOR,
         "lang": "ru",
+        "dir": "ltr",
         "categories": ["education", "productivity"],
+        "prefer_related_applications": False,
+        "launch_handler": {"client_mode": "focus-existing"},
         "icons": [
             {"src": "/static/web/brand/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
             {"src": "/static/web/brand/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
             {"src": "/static/web/brand/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"},
+        ],
+        "screenshots": [
+            {
+                "src": "/static/web/screens/console-mobile.png",
+                "sizes": "390x844",
+                "type": "image/png",
+                "form_factor": "narrow",
+                "label": "Консоль студента на телефоне",
+            },
+            {
+                "src": "/static/web/screens/console-desktop.png",
+                "sizes": "1440x950",
+                "type": "image/png",
+                "form_factor": "wide",
+                "label": "Дашборд консоли на компьютере",
+            },
         ],
         "shortcuts": [
             {"name": "Двойник", "url": "/app/twin"},

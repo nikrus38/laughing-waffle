@@ -1,9 +1,17 @@
 /* ФинТвин service worker: оболочка приложения, статика, офлайн-фолбэк.
    Данные API не кэшируем: реестр FinCoin и матчинг должны быть серверными. */
-const VERSION = 'fintwin-v1';
+const VERSION = 'fintwin-v2';
 const SHELL_CACHE = `${VERSION}-shell`;
 const ASSET_CACHE = `${VERSION}-assets`;
-const SHELL_URLS = ['/', '/login/', '/offline/', '/static/web/landing.css'];
+const SHELL_URLS = [
+  '/',
+  '/login/',
+  '/offline/',
+  '/manifest.webmanifest',
+  '/static/web/landing.css',
+  '/static/web/brand/icon-192.png',
+  '/static/web/brand/logo-ru-480.png',
+];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -20,6 +28,10 @@ self.addEventListener('activate', (event) => {
       )
       .then(() => self.clients.claim()),
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') self.skipWaiting();
 });
 
 self.addEventListener('fetch', (event) => {
@@ -42,7 +54,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Собранные ассеты: stale-while-revalidate
+  // Собранные ассеты и статика: stale-while-revalidate
   if (url.pathname.startsWith('/assets/') || url.pathname.startsWith('/static/')) {
     event.respondWith(
       caches.open(ASSET_CACHE).then(async (cache) => {
