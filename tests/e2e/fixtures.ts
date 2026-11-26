@@ -7,10 +7,18 @@ import { test as base, expect, type Page } from '@playwright/test';
 export const test = base.extend<{ consoleErrors: string[] }>({
   consoleErrors: async ({ page }, use) => {
     const errors: string[] = [];
+    // Внешние шрифты и favicon не относятся к приложению: в CI они могут не загрузиться.
+    const ignored = ['fonts.googleapis.com', 'fonts.gstatic.com', 'favicon.ico'];
+
+    const push = (text: string) => {
+      if (!ignored.some((part) => text.includes(part))) errors.push(text);
+    };
+
     page.on('console', (message) => {
-      if (message.type() === 'error') errors.push(message.text());
+      if (message.type() === 'error') push(message.text());
     });
-    page.on('pageerror', (error) => errors.push(error.message));
+    page.on('pageerror', (error) => push(error.message));
+
     await use(errors);
   },
 });

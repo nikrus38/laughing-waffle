@@ -12,7 +12,7 @@ export default defineConfig({
   workers: 1,
   timeout: 45_000,
   expect: { timeout: 10_000 },
-  reporter: [['list']],
+  reporter: process.env.CI ? [['list'], ['github']] : [['list']],
   projects: [
     { name: 'mobile-390' },
     { name: 'mobile-360', use: { viewport: { width: 360, height: 640 } } },
