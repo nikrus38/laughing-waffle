@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Telegram Mini App для демонстрации концепции \"Финуниверситета 4.0\".",
   "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
   "main": "dist/main.js",
   "directories": {
     "doc": "docs",
@@ -42,6 +45,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.1",
     "@playwright/test": "^1.65.1",
     "@tailwindcss/postcss": "^4.3.5",
     "@testing-library/dom": "^10.4.2",

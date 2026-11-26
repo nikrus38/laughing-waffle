@@ -13,6 +13,10 @@ export default defineConfig({
   timeout: 45_000,
   expect: { timeout: 10_000 },
   reporter: [['list']],
+  projects: [
+    { name: 'mobile-390' },
+    { name: 'mobile-360', use: { viewport: { width: 360, height: 640 } } },
+  ],
   use: {
     baseURL: 'http://127.0.0.1:8010',
     viewport: { width: 390, height: 844 },
