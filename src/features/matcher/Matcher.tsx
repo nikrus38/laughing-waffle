@@ -71,7 +71,14 @@ const Matcher: React.FC = () => {
   }, [decision, logEthicsDecision]);
 
   const detailTask = ranked.find((item) => item.task.id === detailTaskId);
-  const planTask = ranked.find((item) => item.task.id === planTaskId) ?? null;
+
+  // План строим по исходному списку: после отклика задача исчезает из стопки,
+  // но экран плана должен остаться доступным.
+  const planTask = useMemo(() => {
+    if (!planTaskId) return null;
+    const task = tasks.find((item) => item.id === planTaskId);
+    return task ? { task, match: calculateMatch(user, task) } : null;
+  }, [planTaskId, tasks, user]);
 
   const handleApply = (taskId: string) => {
     void applyToTask(taskId);

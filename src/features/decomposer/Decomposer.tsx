@@ -18,14 +18,14 @@ interface ServerDecomposition {
 }
 
 const COMPETENCY_LABELS: Record<string, string> = {
-  data: '??????',
-  code: '????????????????',
-  finance: '???????',
-  comm: '????????????',
-  research: '????????????',
-  entre: '???????????????????',
-  ai: '??',
-  lead: '?????????',
+  data: 'Данные',
+  code: 'Программирование',
+  finance: 'Финансы',
+  comm: 'Коммуникация',
+  research: 'Исследование',
+  entre: 'Предпринимательство',
+  ai: 'ИИ',
+  lead: 'Лидерство',
 };
 
 interface CaseItem {
@@ -130,16 +130,16 @@ const Decomposer: React.FC = () => {
         });
         setNote(
           data.source === 'preset'
-            ? '??????? ?????? ????????? ?? ???????'
-            : '????? ????????????? ?? ??????? ?? ????? ??????',
+            ? 'Готовый пример рассчитан на сервере'
+            : 'Кейсы сгенерированы на сервере по тегам задачи',
         );
       } catch {
         setResult(preset);
-        setNote('?????? ?????????? ? ??????? ????????? ??????');
+        setNote('Сервер недоступен — показан локальный пример');
       }
     } else {
       setResult(preset);
-      setNote('????????? ????-?????: ????? ??????? ? ????????');
+      setNote('Локальный демо-режим: кейсы собраны в браузере');
     }
 
     setBuilt(true);
@@ -193,11 +193,12 @@ const Decomposer: React.FC = () => {
 
         <button
           type="button"
-          onClick={() => setBuilt(true)}
-          className="mt-4 min-h-[44px] w-full rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90"
+          onClick={handleBuild}
+          disabled={loading}
+          className="mt-4 min-h-[44px] w-full rounded-xl text-sm font-semibold text-white transition-opacity hover:opacity-90 disabled:opacity-70"
           style={{ background: 'var(--brand)' }}
         >
-          Разложить на учебные кейсы
+          {loading ? 'Раскладываем…' : 'Разложить на учебные кейсы'}
         </button>
       </section>
 
@@ -248,8 +249,9 @@ const Decomposer: React.FC = () => {
           </div>
 
           <p className="mt-3 text-xs text-slate-500">
-            Демо-генератор: набор кейсов зависит от типа задачи. В реальной системе кейсы
-            подбирались бы по компетенциям и содержанию курсов.
+            {note ? `${note}. ` : ''}
+            Набор кейсов зависит от типа задачи. В реальной системе кейсы подбирались бы по
+            компетенциям и содержанию курсов.
           </p>
         </section>
       )}

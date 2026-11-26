@@ -28,6 +28,10 @@ async function request<T>(path: string, init: RequestInit = {}): Promise<T> {
 
   const method = (init.method ?? 'GET').toUpperCase();
   if (method !== 'GET' && method !== 'HEAD') {
+    if (!getCookie('csrftoken')) {
+      // Cookie могла ещё не прийти: просим её до первого POST
+      await fetch('/api/csrf/', { credentials: 'same-origin' }).catch(() => undefined);
+    }
     const token = getCookie('csrftoken');
     if (token) headers.set('X-CSRFToken', token);
   }

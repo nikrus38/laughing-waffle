@@ -1,12 +1,43 @@
 import React, { useState } from 'react';
 import { useStore } from '../../../shared/store/useStore';
 import { verifyChain } from '../../../domain/ledger';
+import { api } from '../../../shared/api/client';
+
+interface ChainResult {
+  valid: boolean;
+  brokenAt?: number | null;
+  count?: number;
+}
 
 const ChainVerification: React.FC = () => {
   const ledger = useStore((s) => s.ledger);
-  const [result, setResult] = useState<{ valid: boolean; brokenAt?: number } | null>(null);
+  const mode = useStore((s) => s.mode);
+
+  const [result, setResult] = useState<ChainResult | null>(null);
+  const [checking, setChecking] = useState(false);
 
   const lastHash = ledger.length > 0 ? ledger[ledger.length - 1]!.hash : '—';
+
+  const handleVerify = async () => {
+    setChecking(true);
+    try {
+      if (mode === 'server') {
+        // В серверном режиме хэши считает Python (SHA-256), поэтому проверяем на сервере
+        const response = await api.post<{ valid: boolean; brokenAt: number | null; count: number }>(
+          '/api/ledger/verify/',
+          {},
+        );
+        setResult(response);
+      } else {
+        const local = verifyChain(ledger);
+        setResult({ ...local, count: ledger.length });
+      }
+    } catch {
+      setResult({ valid: false, brokenAt: null });
+    } finally {
+      setChecking(false);
+    }
+  };
 
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-4">
@@ -27,10 +58,11 @@ const ChainVerification: React.FC = () => {
 
       <button
         type="button"
-        onClick={() => setResult(verifyChain(ledger))}
-        className="mt-3 min-h-[44px] w-full rounded-xl border border-[color:var(--brand)] text-sm font-semibold text-[color:var(--brand)]"
+        onClick={handleVerify}
+        disabled={checking}
+        className="mt-3 min-h-[44px] w-full rounded-xl border border-[color:var(--brand)] text-sm font-semibold text-[color:var(--brand)] disabled:opacity-60"
       >
-        Проверить цепочку
+        {checking ? 'Проверяем…' : 'Проверить цепочку'}
       </button>
 
       {result && (
@@ -44,8 +76,10 @@ const ChainVerification: React.FC = () => {
           }
         >
           {result.valid
-            ? `Цепочка целостна: проверено ${ledger.length} записей.`
-            : `Нарушение целостности в записи №${(result.brokenAt ?? 0) + 1}.`}
+            ? `Цепочка целостна: проверено ${result.count ?? ledger.length} записей.`
+            : result.brokenAt === null || result.brokenAt === undefined
+              ? 'Не удалось проверить цепочку: сервер недоступен.'
+              : `Нарушение целостности в записи №${result.brokenAt + 1}.`}
         </div>
       )}
 
@@ -55,8 +89,8 @@ const ChainVerification: React.FC = () => {
       </div>
 
       <p className="mt-2 text-[11px] text-slate-400">
-        В демо используется упрощённая хэш-функция. В реальной системе — SHA-256 через
-        crypto.subtle.
+        Хэши считаются алгоритмом SHA-256 на сервере. В локальном демо-режиме используется
+        упрощённая функция, чтобы цепочка проверялась без бэкенда.
       </p>
     </section>
   );

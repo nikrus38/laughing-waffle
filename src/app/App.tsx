@@ -33,7 +33,7 @@ const Splash: React.FC = () => (
 );
 
 const RouteFallback: React.FC = () => (
-  <div className="py-16 text-center text-sm text-slate-500">????????? ???????</div>
+  <div className="py-16 text-center text-sm text-slate-500">Загружаем раздел…</div>
 );
 
 const NotFound: React.FC = () => (
