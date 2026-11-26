@@ -19,5 +19,6 @@ urlpatterns = [
     path("diagnostics/forecast/", views.forecast, name="api-forecast"),
     path("decompose/", views.decompose_task, name="api-decompose"),
     path("demo/reset/", views.demo_reset, name="api-demo-reset"),
+    path("csrf/", views.csrf, name="api-csrf"),
     path("health/", views.health, name="api-health"),
 ]

@@ -377,5 +377,13 @@ def demo_reset(request):
 
 @api_view(["GET"])
 @permission_classes([AllowAny])
+@ensure_csrf_cookie
+def csrf(request):
+    """Выдаёт CSRF-cookie до первого POST — чтобы кнопки работали сразу."""
+    return Response({"ok": True})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
 def health(request):
     return Response({"status": "ok", "service": "fintwin-api"})
