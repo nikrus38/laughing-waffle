@@ -58,6 +58,16 @@ npx tsc --noEmit
 npm run build
 ```
 
+E2E на три демо-сценария (нужен Chromium для Playwright):
+
+```powershell
+npx playwright install chromium
+npm run test:e2e
+```
+
+CI на GitHub Actions гоняет бэкенд, типы, unit-тесты, сборку и e2e на каждый push
+и pull request: `.github/workflows/ci.yml`.
+
 ## Структура
 
 ```
