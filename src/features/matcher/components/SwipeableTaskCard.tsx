@@ -107,7 +107,7 @@ const SwipeableTaskCard: React.FC<SwipeableTaskCardProps> = ({
           type="button"
           onClick={onApply}
           className="min-h-[44px] rounded-xl text-xs font-semibold text-white"
-          style={{ background: 'var(--mint)' }}
+          style={{ background: 'var(--mint-strong)' }}
         >
           Откликнуться
         </button>

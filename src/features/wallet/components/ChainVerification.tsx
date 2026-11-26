@@ -84,7 +84,7 @@ const ChainVerification: React.FC = () => {
       )}
 
       <div className="mt-3 rounded-xl bg-slate-50 p-3">
-        <p className="text-[10px] uppercase tracking-wide text-slate-500">Хэш последней записи</p>
+        <p className="text-[10px] uppercase tracking-wide text-slate-600">Хэш последней записи</p>
         <p className="mt-1 break-all font-mono text-[11px] text-slate-700">{lastHash}</p>
       </div>
 

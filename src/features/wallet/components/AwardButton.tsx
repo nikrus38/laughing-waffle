@@ -82,7 +82,7 @@ const AwardButton: React.FC = () => {
         }}
         aria-expanded={open}
         className="min-h-[48px] w-full rounded-xl text-sm font-semibold text-white"
-        style={{ background: 'var(--mint)' }}
+        style={{ background: 'var(--mint-strong)' }}
       >
         {open ? 'Скрыть действия' : 'Начислить (демо)'}
       </button>

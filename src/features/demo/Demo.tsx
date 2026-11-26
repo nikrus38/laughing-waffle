@@ -139,7 +139,7 @@ const Demo: React.FC = () => {
               type="button"
               onClick={() => navigate(scenario.startRoute)}
               className="mt-3 min-h-[44px] w-full rounded-xl text-sm font-semibold text-white"
-              style={{ background: 'var(--mint)' }}
+              style={{ background: 'var(--mint-strong)' }}
             >
               Запустить сценарий
             </button>

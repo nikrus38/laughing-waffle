@@ -23,6 +23,17 @@
   </head>
   <body class="{% block body_class %}{% endblock %}">
     {% block content %}{% endblock %}
+    <script>
+      // Регистрируем service worker и на публичном сайте: установка PWA
+      // должна работать не только из консоли, но и с главной страницы.
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/sw.js').catch(function () {
+            /* офлайн-режим необязателен: сайт продолжает работать онлайн */
+          });
+        });
+      }
+    </script>
     {% block scripts %}{% endblock %}
   </body>
 </html>

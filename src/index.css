@@ -7,12 +7,13 @@
   --surface: #ffffff;
   --surface-muted: #eef1f5;
   --ink: #193d57;
-  --ink-muted: #5f6f7e;
+  --ink-muted: #52616f;
   --brand: #233e76;
   --brand-soft: #e6ebf5;
   --gold: #d9a227;
   --gold-soft: #fdf3dc;
   --mint: #0198af;
+  --mint-strong: #017a8c;
   --mint-soft: #e2f3f6;
   --violet: #275e9f;
   --violet-soft: #e7eef8;
@@ -59,6 +60,11 @@ html body :focus-visible {
   font-variant-numeric: tabular-nums;
 }
 
+/* Мелкие серые подписи в консоли должны проходить контраст WCAG AA */
+.console-dark .text-slate-400 {
+  color: #64748b;
+}
+
 /* Уважаем prefers-reduced-motion */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -77,8 +83,7 @@ html body :focus-visible {
 }
 
 /* Мягкое появление страницы при переключении вкладок */
-@keyframes page-enter {
-  from {
+@keyframes page-enter {  from {
     opacity: 0;
     transform: translateY(4px);
   }
