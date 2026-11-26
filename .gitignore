@@ -1,0 +1,31 @@
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+db.sqlite3
+api/staticfiles/
+
+# Node
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Инструменты
+.playwright-mcp/
+.vite/
+coverage/
+
+# Секреты
+.env
+.env.local
+!.env.example
+
+# Тяжёлые исходники брендбука (ссылки и разбор остаются в brand/fa/README.md)
+brand/fa/brandbook/*.pdf
+brand/fa/templates/*.pptx
+brand/fa/mascot/*.ai
+
+# ОС и IDE
+.DS_Store
+Thumbs.db
+.idea/

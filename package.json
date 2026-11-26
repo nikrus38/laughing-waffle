@@ -16,8 +16,7 @@
     "test:ui": "vitest --ui",
     "test:run": "vitest run",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview-build": "vite preview --outDir dist",
-    "check:data": "node scripts/checkData.js"
+    "preview-build": "vite preview --outDir dist"
   },
   "repository": {
     "type": "git",
@@ -31,6 +30,7 @@
   },
   "homepage": "https://github.com/nikrus38/laughing-waffle#readme",
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@telegram-apps/sdk-react": "^3.3.9",
     "@tma.js/bridge": "^2.3.3",
     "@tma.js/transformers": "^1.2.0",
