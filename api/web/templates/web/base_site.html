@@ -1,0 +1,152 @@
+{% extends "web/base.html" %}
+{% load static %}
+
+{% block body_class %}site{% endblock %}
+
+{% block content %}
+<div class="utility-bar">
+  <div class="container utility-inner">
+    <p class="utility-brand">
+      Финансовый университет
+      <span class="utility-sep" aria-hidden="true">·</span>
+      <span class="utility-project">проект «ФинТвин»</span>
+    </p>
+    <nav class="utility-nav" aria-label="Сервисы проекта">
+      <a href="/app/">Личный кабинет</a>
+      <a href="{% url 'demo-login' %}">Демо</a>
+      <a href="/install/">Установить приложение</a>
+    </nav>
+  </div>
+</div>
+
+<header class="site-header">
+  <div class="container header-inner">
+    <a class="brand" href="/" aria-label="ФинТвин, на главную">
+      <img
+        class="brand-logo"
+        src="{% static 'web/brand/logo-ru-480.png' %}"
+        alt="Финансовый университет при Правительстве Российской Федерации"
+        width="150"
+        height="51"
+      />
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="brand-text">ФинТвин</span>
+    </a>
+
+    <nav class="site-nav" aria-label="Разделы сайта">
+      <a class="{% if request.path == '/' %}is-active{% endif %}" href="/">Главная</a>
+      <a class="{% if request.path == '/features/' %}is-active{% endif %}" href="/features/">Возможности</a>
+      <a class="{% if request.path == '/how/' %}is-active{% endif %}" href="/how/">Как работает</a>
+      <a class="{% if request.path == '/ethics/' %}is-active{% endif %}" href="/ethics/">Этика</a>
+      <a class="{% if request.path == '/partners/' %}is-active{% endif %}" href="/partners/">Партнёрам</a>
+      <a class="{% if request.path == '/install/' %}is-active{% endif %}" href="/install/">Приложение</a>
+    </nav>
+
+    <div class="header-actions">
+      {% if user.is_authenticated %}
+        <a class="btn btn-ghost" href="/app/">Моя консоль</a>
+      {% else %}
+        <a class="btn btn-ghost" href="/login/">Войти</a>
+        <a class="btn btn-primary" href="/register/">Начать</a>
+      {% endif %}
+    </div>
+
+    <button class="nav-toggle" type="button" aria-label="Открыть меню" aria-expanded="false" data-nav-toggle>
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <nav class="mobile-nav" aria-label="Мобильное меню" data-mobile-nav hidden>
+    <a href="/">Главная</a>
+    <a href="/features/">Возможности</a>
+    <a href="/how/">Как работает</a>
+    <a href="/ethics/">Этика</a>
+    <a href="/partners/">Партнёрам</a>
+    <a href="/install/">Приложение</a>
+    <a href="/faq/">Вопросы</a>
+    {% if user.is_authenticated %}
+      <a class="btn btn-primary" href="/app/">Моя консоль</a>
+    {% else %}
+      <a class="btn btn-primary" href="/login/">Войти</a>
+    {% endif %}
+  </nav>
+</header>
+
+<main>
+  {% block page %}{% endblock %}
+</main>
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <span class="footer-logo">
+        <img
+          src="{% static 'web/brand/logo-ru-480.png' %}"
+          alt="Финансовый университет"
+          height="34"
+          width="100"
+        />
+      </span>
+      <span class="brand-text">ФинТвин</span>
+      <p>Университет 4.0: от цифрового следа к экосистеме смыслов.</p>
+      <p class="muted small">Демонстрационный проект · 2026</p>
+    </div>
+
+    <nav class="footer-col" aria-label="Разделы">
+      <h4>Разделы</h4>
+      <a href="/features/">Возможности</a>
+      <a href="/how/">Как работает</a>
+      <a href="/ethics/">Этика ИИ</a>
+      <a href="/partners/">Партнёрам</a>
+    </nav>
+
+    <nav class="footer-col" aria-label="Продукт">
+      <h4>Продукт</h4>
+      <a href="/app/">Консоль</a>
+      <a href="/install/">Приложение</a>
+      <a href="/faq/">Вопросы</a>
+      <a href="/api/health/">Статус API</a>
+    </nav>
+
+    <div class="footer-col">
+      <h4>Доступ</h4>
+      <a href="/login/">Войти</a>
+      <a href="/register/">Регистрация</a>
+      <a href="{% url 'demo-login' %}">Демо-студент</a>
+      <a href="/admin/">Админка</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2026 ФинТвин. Демо-данные, не реальные показатели.</span>
+    <span>Сделано студентами Финуниверситета</span>
+  </div>
+</footer>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  (function () {
+    var toggle = document.querySelector('[data-nav-toggle]');
+    var mobileNav = document.querySelector('[data-mobile-nav]');
+    if (!toggle || !mobileNav) return;
+
+    toggle.addEventListener('click', function () {
+      var isHidden = mobileNav.hasAttribute('hidden');
+      if (isHidden) {
+        mobileNav.removeAttribute('hidden');
+      } else {
+        mobileNav.setAttribute('hidden', '');
+      }
+      toggle.setAttribute('aria-expanded', String(isHidden));
+    });
+
+    mobileNav.addEventListener('click', function (event) {
+      if (event.target.tagName === 'A') {
+        mobileNav.setAttribute('hidden', '');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  })();
+</script>
+{% block page_scripts %}{% endblock %}
+{% endblock %}

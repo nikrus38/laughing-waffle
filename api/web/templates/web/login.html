@@ -1,0 +1,50 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block title %}Вход — ФинТвин{% endblock %}
+{% block body_class %}auth{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <a class="auth-brand" href="/">
+    <img
+      src="{% static 'web/brand/logo-ru-480.png' %}"
+      alt="Финансовый университет"
+      height="32"
+      width="95"
+    />
+    <span>ФинТвин</span>
+  </a>
+
+  <h1>Вход в консоль</h1>
+  <p class="auth-sub">Учебный профиль, задачи партнёров и реестр FinCoin.</p>
+
+  {% if error %}<p class="auth-error">{{ error }}</p>{% endif %}
+
+  <form class="auth-form" method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+    <input type="hidden" name="next" value="{{ next }}" />
+    <div class="field">
+      <label for="username">Логин</label>
+      <input class="input" id="username" name="username" autocomplete="username" required />
+    </div>
+    <div class="field">
+      <label for="password">Пароль</label>
+      <input class="input" id="password" name="password" type="password" autocomplete="current-password" required />
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Войти</button>
+  </form>
+
+  <form method="post" action="{% url 'demo-login' %}" class="demo-box">
+    {% csrf_token %}
+    <p>
+      Комиссии: демо-студент <code>{{ demo_login }}</code> / <code>{{ demo_password }}</code>
+    </p>
+    <button class="btn btn-outline btn-block" type="submit" style="margin-top: 10px">
+      Войти как демо-студент
+    </button>
+  </form>
+
+  <p class="auth-alt">Нет аккаунта? <a href="{% url 'register' %}">Зарегистрироваться</a></p>
+  <a class="link-back" href="/">← На главную</a>
+</div>
+{% endblock %}

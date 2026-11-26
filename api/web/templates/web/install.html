@@ -1,0 +1,137 @@
+{% extends "web/base_site.html" %}
+{% block title %}Приложение — ФинТвин{% endblock %}
+{% block description %}Как установить ФинТвин как приложение: Windows, macOS, Linux, Android, iOS и запуск внутри Telegram.{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Приложение</span>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">PWA + Telegram Mini App</p>
+    <h1>Один продукт — везде</h1>
+    <p class="section-lead">
+      ФинТвин не нужно скачивать из магазина приложений. Он устанавливается из браузера
+      и открывается в отдельном окне, как обычное приложение.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{% url 'demo-login' %}">Открыть демо</a>
+      <a class="btn btn-outline" href="/features/">Что внутри</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Инструкции</p>
+      <h2>Как установить</h2>
+    </div>
+
+    <div class="platform-grid">
+      <article class="platform-card">
+        <span class="install-os">Windows</span>
+        <ol class="platform-steps">
+          <li>Откройте сайт в Chrome или Edge.</li>
+          <li>Нажмите иконку установки в адресной строке.</li>
+          <li>Готово: иконка появится в «Пуске» и на панели задач.</li>
+        </ol>
+      </article>
+
+      <article class="platform-card">
+        <span class="install-os">macOS</span>
+        <ol class="platform-steps">
+          <li>Откройте сайт в Chrome или Edge.</li>
+          <li>Меню браузера → «Установить приложение».</li>
+          <li>Приложение появится в Launchpad.</li>
+        </ol>
+      </article>
+
+      <article class="platform-card">
+        <span class="install-os">Linux</span>
+        <ol class="platform-steps">
+          <li>Chrome или Chromium: иконка установки в адресной строке.</li>
+          <li>Приложение добавится в меню программ.</li>
+          <li>Работает в отдельном окне без вкладок.</li>
+        </ol>
+      </article>
+
+      <article class="platform-card">
+        <span class="install-os">Android</span>
+        <ol class="platform-steps">
+          <li>Откройте сайт в Chrome.</li>
+          <li>Меню → «Добавить на главный экран».</li>
+          <li>Запуск — на весь экран, без адресной строки.</li>
+        </ol>
+      </article>
+
+      <article class="platform-card">
+        <span class="install-os">iOS / iPadOS</span>
+        <ol class="platform-steps">
+          <li>Откройте сайт в Safari.</li>
+          <li>Кнопка «Поделиться» → «На экран Домой».</li>
+          <li>Ограничения платформы: без установки из App Store и с ограниченным push.</li>
+        </ol>
+      </article>
+
+      <article class="platform-card">
+        <span class="install-os">Telegram</span>
+        <ol class="platform-steps">
+          <li>Откройте бота с Mini App.</li>
+          <li>Нажмите кнопку запуска приложения.</li>
+          <li>Интерфейс тот же, данные профиля Telegram не читаются.</li>
+        </ol>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container home-split">
+    <div>
+      <p class="eyebrow">Честно о технологии</p>
+      <h2>Что такое PWA</h2>
+      <p class="section-lead">
+        Progressive Web App — сайт, который браузер умеет устанавливать как приложение.
+        Он кэширует оболочку и открывается быстрее, но данные (реестр, матчинг) остаются
+        серверными.
+      </p>
+      <ul class="check-list check-list-lg">
+        <li>Иконка и отдельное окно без адресной строки</li>
+        <li>Работает офлайн для оболочки, но не для начислений</li>
+        <li>Обновляется автоматически, без магазина приложений</li>
+        <li>Требует HTTPS — это требование браузеров, а не наше</li>
+      </ul>
+    </div>
+
+    <div class="notice-card">
+      <h3>Чего не будет</h3>
+      <ul>
+        <li>Настоящего UWP-приложения и установки в Microsoft Store «из коробки»</li>
+        <li>iOS-приложения вне App Store</li>
+        <li>Полной офлайн-работы для FinCoin и матчинга</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container home-split">
+    <div>
+      <p class="eyebrow eyebrow-light">Проверить сейчас</p>
+      <h2>Установите демо на своё устройство</h2>
+      <p class="section-lead section-lead-light">
+        Откройте консоль и нажмите «Установить» в появившемся баннере — или воспользуйтесь
+        инструкцией для своей платформы.
+      </p>
+    </div>
+    <div class="install-actions install-actions-right">
+      <a class="btn btn-primary btn-lg" href="{% url 'demo-login' %}">Открыть консоль</a>
+      <a class="btn btn-outline-light btn-lg" href="/faq/">Частые вопросы</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

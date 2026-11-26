@@ -1,0 +1,125 @@
+{% extends "web/base_site.html" %}
+{% block title %}Партнёрам — ФинТвин{% endblock %}
+{% block description %}Как запрос индустрии превращается в сквозную учебную траекторию: публикация задачи, декомпозиция и результат.{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Партнёрам</span>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Для индустрии и кафедр</p>
+    <h1>Один запрос — сквозная траектория</h1>
+    <p class="section-lead">
+      Задача партнёра превращается в учебные кейсы для разных курсов. Не нужно вручную
+      переписывать её под каждую дисциплину.
+    </p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="{% url 'demo-login' %}">Открыть демо в роли партнёра</a>
+      <a class="btn btn-outline" href="/how/">Как устроен процесс</a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Пример</p>
+      <h2>Было → стало</h2>
+      <p class="section-lead">Показываем на задаче «прогноз оттока клиентов». Организация обозначена текстом и помечена как пример.</p>
+    </div>
+
+    <div class="split">
+      <div class="split-card">
+        <span class="chip chip-blue">Запрос партнёра</span>
+        <h3>Прогноз оттока клиентов</h3>
+        <p class="muted">Крупный банк (пример) · 6 недель · ML и аналитика</p>
+        <ul class="check-list">
+          <li>Требуемые компетенции: данные, ИИ, финансы</li>
+          <li>Ожидаемый результат описан словами бизнеса</li>
+          <li>Персональные данные клиентов не передаются</li>
+        </ul>
+      </div>
+
+      <div class="split-arrow" aria-hidden="true">→</div>
+
+      <div class="split-card">
+        <span class="chip chip-mint">Учебные кейсы</span>
+        <ul class="case-list">
+          <li><span>1 курс</span> Собрать и очистить данные <b>+20 FC</b></li>
+          <li><span>1 курс</span> Описательная статистика <b>+20 FC</b></li>
+          <li><span>3 курс</span> Логистическая регрессия <b>+100 FC</b></li>
+          <li><span>4 курс</span> Пилот у партнёра <b>+100 FC</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Что получает партнёр</p>
+      <h2>Три причины участвовать</h2>
+    </div>
+
+    <div class="link-grid link-grid-3">
+      <article class="feature">
+        <span class="feature-icon">⏱</span>
+        <h3>Меньше ручной работы</h3>
+        <p>Задача раскладывается на кейсы автоматически, методистам не нужно переписывать её под каждый курс.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon">🎯</span>
+        <h3>Понятный результат</h3>
+        <p>Видно, кто работал над задачей, какие компетенции выросли и что получилось на выходе.</p>
+      </article>
+      <article class="feature">
+        <span class="feature-icon">🔐</span>
+        <h3>Безопасные данные</h3>
+        <p>Кейсы собираются без реальных персональных данных. Приватность — часть алгоритма, а не приписка.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Порядок работы</p>
+      <h2>Четыре шага</h2>
+    </div>
+
+    <ol class="steps steps-4">
+      <li class="step">
+        <span class="step-number">01</span>
+        <h3>Публикация</h3>
+        <p>Формулировка задачи, компетенции и срок — в одном окне консоли.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">02</span>
+        <h3>Декомпозиция</h3>
+        <p>Получаете набор кейсов по курсам с начислением FinCoin на каждом узле.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">03</span>
+        <h3>Пилот</h3>
+        <p>Студенты откликаются, наставники сопровождают, результат проверяется.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">04</span>
+        <h3>Масштаб</h3>
+        <p>Кейсы остаются в библиотеке и используются в следующих потоках.</p>
+      </li>
+    </ol>
+
+    <p class="notice notice-wide">
+      В демо партнёрские организации обозначены текстом: «Крупный банк (пример)»,
+      «Финтех-компания (пример)». Настоящие логотипы не используются.
+    </p>
+  </div>
+</section>
+{% endblock %}

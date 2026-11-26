@@ -1,0 +1,121 @@
+{% extends "web/base_site.html" %}
+{% block title %}Этика ИИ — ФинТвин{% endblock %}
+{% block description %}Ценности университета как проверяемые правила алгоритма: MATCH-001, WALLET-001, LEDGER-001, EXPORT-001 и журнал решений ИИ.{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Этика</span>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Ценности — не плакат, а код</p>
+    <h1>Этика ИИ</h1>
+    <p class="section-lead">
+      У каждого правила есть идентификатор, проверка и запись в журнале. Нажмите «Почему так?» —
+      увидите, что система рассматривала и что отклонила.
+    </p>
+    <p class="notice">
+      Официальные формулировки ценностей ещё не переданы командой. В интерфейсе на их месте
+      честно написано «текст уточняется» — мы не придумываем цитаты.
+    </p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="rule-cards">
+      <article class="rule-card">
+        <span class="rule-code">MATCH-001</span>
+        <h3>Задача на вырост</h3>
+        <p>В первой тройке рекомендаций всегда есть сложная задача. Простые не выигрывают только за высокий процент совпадения.</p>
+      </article>
+      <article class="rule-card">
+        <span class="rule-code">WALLET-001</span>
+        <h3>Награда — не цель</h3>
+        <p>Рекомендации ранжируются по вкладу в развитие, а не по размеру награды. Дневные лимиты не дают «нафармить» баллы.</p>
+      </article>
+      <article class="rule-card">
+        <span class="rule-code">LEDGER-001</span>
+        <h3>Авторство и целостность</h3>
+        <p>Одно основание нельзя засчитать дважды. Каждая запись хранит хэш предыдущей — подмена ломает цепочку.</p>
+      </article>
+      <article class="rule-card">
+        <span class="rule-code">EXPORT-001</span>
+        <h3>Экспорт знаний</h3>
+        <p>Открытый модуль по истории российской финансовой инженерии отмечается отдельно — это вклад, а не обязаловка.</p>
+      </article>
+      <article class="rule-card">
+        <span class="rule-code">TWIN-001</span>
+        <h3>Рост, а не рейтинг</h3>
+        <p>Двойник не сравнивает студентов между собой. Только ваш уровень, цель и зона развития.</p>
+      </article>
+      <article class="rule-card">
+        <span class="rule-code">DECOMP-001</span>
+        <h3>Без персональных данных</h3>
+        <p>Задача партнёра раскладывается на кейсы без реальных данных клиентов и сотрудников.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Проверяемость</p>
+      <h2>Как устроен журнал решений</h2>
+    </div>
+
+    <ol class="steps">
+      <li class="step">
+        <span class="step-number">01</span>
+        <h3>Рассмотрели</h3>
+        <p>Система фиксирует все варианты, которые были в выдаче или в очереди на начисление.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">02</span>
+        <h3>Отклонили</h3>
+        <p>У каждого отклонения есть причина и ценность, которая сработала: «Первенство», «Порядочность» и другие.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">03</span>
+        <h3>Выбрали и объяснили</h3>
+        <p>В интерфейсе остаётся кнопка «Почему так?» — она открывает ту же запись журнала.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Десять ценностей</p>
+      <h2>Что уже зашито в правила</h2>
+      <p class="section-lead">
+        Названия взяты из рабочего перечня команды. Официальные формулировки появятся,
+        когда их передадут — тогда поле «текст» заполнится без изменения логики.
+      </p>
+    </div>
+
+    <ul class="value-chips">
+      <li>Стремление к совершенству</li>
+      <li>Честность и порядочность</li>
+      <li>Инновационность</li>
+      <li>Коллаборация</li>
+      <li>Лидерство</li>
+      <li>Устойчивость</li>
+      <li>Разнообразие</li>
+      <li>Ответственность</li>
+      <li>Превосходство</li>
+      <li>Патриотизм</li>
+    </ul>
+
+    <div class="feature-cta">
+      <p>Журнал решений и симулятор искушения доступны в консоли.</p>
+      <a class="btn btn-primary" href="{% url 'demo-login' %}">Открыть «Этику ИИ»</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

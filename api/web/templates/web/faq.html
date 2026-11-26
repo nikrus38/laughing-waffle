@@ -1,0 +1,59 @@
+{% extends "web/base_site.html" %}
+{% block title %}Вопросы — ФинТвин{% endblock %}
+{% block description %}Частые вопросы о ФинТвин: данные, приватность, FinCoin, установка и статус проекта.{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Вопросы</span>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">Коротко о главном</p>
+    <h1>Частые вопросы</h1>
+    <p class="section-lead">
+      Если ответа нет — посмотрите разделы «Как работает» и «Этика», там подробнее.
+    </p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container faq-container">
+    <details class="faq">
+      <summary>Это настоящая система университета?</summary>
+      <p>Нет. Это демонстрационный MVP для защиты проекта: данные вымышленные и помечены как демо.</p>
+    </details>
+    <details class="faq">
+      <summary>Какие данные вы собираете?</summary>
+      <p>Логин, пароль в виде хэша и учебный профиль. Данные Telegram не читаются и не сохраняются.</p>
+    </details>
+    <details class="faq">
+      <summary>Можно ли накрутить FinCoin?</summary>
+      <p>Одно основание нельзя засчитать дважды, действуют дневные лимиты, а цепочка хэшей проверяема.</p>
+    </details>
+    <details class="faq">
+      <summary>Почему часть текстов ценностей пустая?</summary>
+      <p>Официальные формулировки пока не переданы. Мы не придумываем их и честно показываем «текст уточняется».</p>
+    </details>
+    <details class="faq">
+      <summary>Правда можно установить как приложение?</summary>
+      <p>Да, это PWA: Chrome и Edge устанавливают его на рабочий стол, Safari — на домашний экран iOS.</p>
+    </details>
+    <details class="faq">
+      <summary>Что с персональными данными партнёров?</summary>
+      <p>В демо используются только обозначения вроде «Крупный банк (пример)». Реальные данные и логотипы не применяются.</p>
+    </details>
+    <details class="faq">
+      <summary>Кто это сделал?</summary>
+      <p>Команда первокурсников Факультета информационных технологий и анализа больших данных Финуниверситета.</p>
+    </details>
+
+    <div class="feature-cta">
+      <p>Остались вопросы по продукту?</p>
+      <a class="btn btn-primary" href="{% url 'demo-login' %}">Открыть демо</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

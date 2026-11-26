@@ -1,0 +1,142 @@
+{% extends "web/base_site.html" %}
+{% block title %}Как работает — ФинТвин{% endblock %}
+{% block description %}Путь студента и партнёра в ФинТвин: матчинг, цифровой двойник, FinCoin и этический фильтр — по шагам.{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Как работает</span>
+</div>
+
+<section class="page-hero">
+  <div class="container">
+    <p class="eyebrow">От первого клика до первого результата</p>
+    <h1>Как это работает</h1>
+    <p class="section-lead">
+      Три шага для студента и три — для партнёра. Всё, что происходит внутри,
+      можно объяснить одной схемой и проверить тестами.
+    </p>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <ol class="steps">
+      <li class="step">
+        <span class="step-number">01</span>
+        <h3>Заполняете профиль</h3>
+        <p>Курс, интересы и стартовые компетенции. Без паспорта, телефона и среднего балла.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">02</span>
+        <h3>Получаете задачу</h3>
+        <p>ИИ-сват показывает задачи партнёров с объяснением каждого фактора совпадения.</p>
+      </li>
+      <li class="step">
+        <span class="step-number">03</span>
+        <h3>Растёте и фиксируете вклад</h3>
+        <p>Двойник обновляет компетенции, FinCoin записывает вклад в проверяемый реестр.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Две стороны одной платформы</p>
+      <h2>Путь студента и путь партнёра</h2>
+    </div>
+
+    <div class="journey-grid">
+      <article class="journey">
+        <span class="chip chip-blue">Студент</span>
+        <ol class="journey-list">
+          <li><strong>Профиль.</strong> Восемь компетенций, цель и интересы.</li>
+          <li><strong>Матч.</strong> Карточка задачи: навыки, срок, сложность и три фактора «почему подходит».</li>
+          <li><strong>Отклик.</strong> План первого месяца и связь с двойником.</li>
+          <li><strong>Модуль.</strong> Микромодуль из зоны роста, +20 FinCoin за данные для ИИ.</li>
+          <li><strong>Реестр.</strong> Запись с обоснованием, ценностями и хэшем предыдущей записи.</li>
+        </ol>
+      </article>
+
+      <article class="journey">
+        <span class="chip chip-mint">Партнёр и кафедра</span>
+        <ol class="journey-list">
+          <li><strong>Задача.</strong> Формулировка, требуемые компетенции, срок.</li>
+          <li><strong>Декомпозиция.</strong> 4–6 учебных кейсов по курсам с суммой FinCoin.</li>
+          <li><strong>Запуск.</strong> Студенты откликаются, наставники сопровождают.</li>
+          <li><strong>Результат.</strong> Видно, какие компетенции выросли и что получилось.</li>
+          <li><strong>Масштаб.</strong> Кейсы переиспользуются в следующих семестрах.</li>
+        </ol>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Без магии</p>
+      <h2>Правила, которые можно проверить</h2>
+      <p class="section-lead">
+        Алгоритмы детерминированы: одинаковые данные дают одинаковый результат, а каждое
+        решение объяснено.
+      </p>
+    </div>
+
+    <div class="rule-table">
+      <div class="rule-row">
+        <span class="rule-code">MATCH</span>
+        <div>
+          <h3>Балл совпадения</h3>
+          <p>100 × (0,40·навыки + 0,30·зона роста + 0,20·интересы + 0,10·загрузка). Все факторы видны в карточке.</p>
+        </div>
+      </div>
+      <div class="rule-row">
+        <span class="rule-code">MATCH-001</span>
+        <div>
+          <h3>Задача на вырост</h3>
+          <p>В первой тройке рекомендаций всегда есть сложная задача. Причина вытеснения пишется в журнал.</p>
+        </div>
+      </div>
+      <div class="rule-row">
+        <span class="rule-code">TWIN</span>
+        <div>
+          <h3>Убывающая отдача</h3>
+          <p>Прирост = gain × (1 − уровень/100) × доля верных ответов. Чем выше уровень, тем меньше прирост.</p>
+        </div>
+      </div>
+      <div class="rule-row">
+        <span class="rule-code">LEDGER</span>
+        <div>
+          <h3>Реестр FinCoin</h3>
+          <p>Одно основание нельзя засчитать дважды, действуют дневные лимиты, цепочка хэшей проверяема.</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="notice notice-wide">
+      Пол, возраст, происхождение и средний балл не участвуют в подборе задач. Это правило
+      зафиксировано в коде и проверяется тестами.
+    </p>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container home-split">
+    <div>
+      <p class="eyebrow eyebrow-light">Следующий шаг</p>
+      <h2>Посмотрите на живом примере</h2>
+      <p class="section-lead section-lead-light">
+        Демо-студент уже заполнен: можно откликнуться на задачу, пройти модуль и проверить реестр.
+      </p>
+    </div>
+    <div class="install-actions install-actions-right">
+      <a class="btn btn-primary btn-lg" href="{% url 'demo-login' %}">Открыть демо</a>
+      <a class="btn btn-outline-light btn-lg" href="/ethics/">Про этику</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

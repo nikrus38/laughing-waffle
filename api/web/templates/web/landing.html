@@ -1,0 +1,219 @@
+{% extends "web/base_site.html" %}
+{% load static %}
+
+{% block title %}ФинТвин — Университет 4.0{% endblock %}
+
+{% block page %}
+<section class="hero">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <p class="eyebrow">Демонстрационный MVP · Финуниверситет</p>
+      <h1>
+        Университет, который видит<br />
+        ваш <span class="accent">рост</span>, а не средний балл
+      </h1>
+      <p class="lead">
+        ФинТвин собирает учёбу, проекты партнёров и наставничество в одну траекторию.
+        Цифровой двойник показывает компетенции, ИИ-сват подбирает задачу, FinCoin фиксирует вклад.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'demo-login' %}">Открыть демо</a>
+        <a class="btn btn-outline btn-lg" href="/how/">Как это работает</a>
+      </div>
+      <p class="hero-note">
+        Без установки и без персональных данных. Всё содержимое — демонстрационное.
+      </p>
+    </div>
+
+    <div class="hero-visual" aria-hidden="true">
+      <div class="app-frame">
+        <div class="app-topbar">
+          <span class="avatar">АП</span>
+          <div class="app-user">
+            <strong>Александр</strong>
+            <span>1 курс · Финуниверситет</span>
+          </div>
+          <span class="coin">🪙 300 FC</span>
+        </div>
+
+        <div class="app-card">
+          <div class="app-card-head">
+            <span>Индекс бесшовности</span>
+            <span class="chip chip-mint">демо-оценка</span>
+          </div>
+          <div class="ring-row">
+            <div class="ring" style="--value: 67"><span>67</span></div>
+            <p>
+              Доля активностей дня — учёба, проект, стажировка, досуг, — связанных одной сквозной задачей.
+            </p>
+          </div>
+        </div>
+
+        <div class="app-card">
+          <div class="app-card-head">
+            <span>Сегодня</span>
+            <span class="chip chip-violet">рекомендации ИИ</span>
+          </div>
+          <div class="mini-row">
+            <div>
+              <strong>Прогноз оттока клиентов</strong>
+              <span>Задача партнёра · на вырост</span>
+            </div>
+            <span class="score">69%</span>
+          </div>
+          <div class="mini-row">
+            <div>
+              <strong>Основы анализа данных</strong>
+              <span>Микромодуль · 30 мин</span>
+            </div>
+            <span class="score score-mint">+20 FC</span>
+          </div>
+        </div>
+
+        <div class="app-nav">
+          <span class="is-active">Главная</span>
+          <span>Двойник</span>
+          <span>Матч</span>
+          <span>Кошелёк</span>
+          <span>Этика</span>
+        </div>
+      </div>
+      <div class="glow" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="container stats">
+    <div class="stat">
+      <strong>34,7%</strong>
+      <span>кооперация вузов с индустрией</span>
+    </div>
+    <div class="stat">
+      <strong>55%</strong>
+      <span>кооперация с поставщиками</span>
+    </div>
+    <div class="stat">
+      <strong>6</strong>
+      <span>этапов задания в одном продукте</span>
+    </div>
+    <div class="stat">
+      <strong>10</strong>
+      <span>ценностей как правила алгоритма</span>
+    </div>
+  </div>
+  <p class="container stats-note">
+    Первые две цифры — из исходных данных задания. Остальные — параметры демо-модели.
+  </p>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Разделы сайта</p>
+      <h2>С чего начать</h2>
+      <p class="section-lead">
+        Каждый раздел — отдельная страница: можно читать по порядку или сразу открыть нужное.
+      </p>
+    </div>
+
+    <div class="link-grid">
+      <a class="link-card" href="/features/">
+        <span class="link-icon">🧭</span>
+        <h3>Возможности</h3>
+        <p>Что видит студент, партнёр и кафедра. Двойник, матчинг, FinCoin и этика.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+      <a class="link-card" href="/how/">
+        <span class="link-icon">🛠</span>
+        <h3>Как работает</h3>
+        <p>Путь от профиля до первого результата: шаги, правила и ограничения.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+      <a class="link-card" href="/ethics/">
+        <span class="link-icon">🛡</span>
+        <h3>Этика ИИ</h3>
+        <p>Ценности как проверяемые правила: MATCH-001, LEDGER-001 и журнал решений.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+      <a class="link-card" href="/partners/">
+        <span class="link-icon">🤝</span>
+        <h3>Партнёрам</h3>
+        <p>Один запрос индустрии превращается в сквозную траекторию для нескольких курсов.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+      <a class="link-card" href="/install/">
+        <span class="link-icon">📲</span>
+        <h3>Приложение</h3>
+        <p>Установка на рабочий стол и домашний экран: Windows, macOS, Android, iOS, Telegram.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+      <a class="link-card" href="/faq/">
+        <span class="link-icon">❓</span>
+        <h3>Вопросы</h3>
+        <p>Короткие ответы о данных, приватности, накрутке FinCoin и статусе проекта.</p>
+        <span class="link-more">Открыть раздел →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="section section-alt">
+  <div class="container home-split">
+    <div>
+      <p class="eyebrow">Один продукт вместо пяти систем</p>
+      <h2>Что вы получите</h2>
+      <p class="section-lead">
+        Вместо расписания в одном месте, задач в чатах и баллов в таблице — одна консоль,
+        где каждый шаг объяснён.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="/features/">Посмотреть возможности</a>
+        <a class="btn btn-outline" href="/features/#roles">Выбрать роль</a>
+      </div>
+    </div>
+
+    <ul class="check-list check-list-lg">
+      <li>Прозрачный матчинг: видно каждый фактор совпадения</li>
+      <li>Задача на вырост в первой тройке — по правилу MATCH-001</li>
+      <li>FinCoin только за вклад, с лимитами и проверяемым реестром</li>
+      <li>Журнал решений ИИ: что рассмотрели, что отклонили и почему</li>
+      <li>Один интерфейс в браузере, Telegram и как приложение</li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section-dark">
+  <div class="container install-grid">
+    <div>
+      <p class="eyebrow eyebrow-light">Работает везде, где есть браузер</p>
+      <h2>Открывается как приложение</h2>
+      <p class="section-lead section-lead-light">
+        Один и тот же продукт запускается в Telegram, в браузере и как PWA: иконка на рабочем столе
+        или домашнем экране, отдельное окно без адресной строки.
+      </p>
+      <div class="install-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'demo-login' %}">Попробовать сейчас</a>
+        <a class="btn btn-outline-light btn-lg" href="/install/">Как установить</a>
+      </div>
+    </div>
+
+    <div class="install-cards">
+      <article class="install-card">
+        <span class="install-os">Windows / macOS / Linux</span>
+        <p>Кнопка «Установить» в Chrome или Edge — приложение открывается в своём окне.</p>
+      </article>
+      <article class="install-card">
+        <span class="install-os">Android</span>
+        <p>«Добавить на главный экран» в Chrome. В дальнейшем — упаковка в APK.</p>
+      </article>
+      <article class="install-card">
+        <span class="install-os">iOS / iPadOS</span>
+        <p>Safari → «Поделиться» → «На экран Домой». Ограничения платформы описаны честно.</p>
+      </article>
+      <article class="install-card">
+        <span class="install-os">Telegram</span>
+        <p>Mini App по ссылке: тот же интерфейс, без установки и без чтения данных профиля.</p>
+      </article>
+    </div>
+  </div>
+</section>
+{% endblock %}

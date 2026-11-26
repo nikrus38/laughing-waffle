@@ -1,0 +1,54 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% block title %}Регистрация — ФинТвин{% endblock %}
+{% block body_class %}auth{% endblock %}
+
+{% block content %}
+<div class="auth-card">
+  <a class="auth-brand" href="/">
+    <img
+      src="{% static 'web/brand/logo-ru-480.png' %}"
+      alt="Финансовый университет"
+      height="32"
+      width="95"
+    />
+    <span>ФинТвин</span>
+  </a>
+
+  <h1>Создать профиль</h1>
+  <p class="auth-sub">
+    Только логин, пароль и курс. Персональные данные и профиль Telegram не запрашиваются.
+  </p>
+
+  {% if error %}<p class="auth-error">{{ error }}</p>{% endif %}
+
+  <form class="auth-form" method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+    <div class="field">
+      <label for="display_name">Как вас называть</label>
+      <input class="input" id="display_name" name="display_name" maxlength="120" placeholder="Александр Петров" />
+    </div>
+    <div class="field">
+      <label for="username">Логин</label>
+      <input class="input" id="username" name="username" autocomplete="username" required />
+    </div>
+    <div class="field">
+      <label for="password">Пароль (не короче 8 символов)</label>
+      <input class="input" id="password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+    </div>
+    <div class="field">
+      <label for="course">Курс</label>
+      <select class="select" id="course" name="course">
+        <option value="1">1 курс</option>
+        <option value="2">2 курс</option>
+        <option value="3">3 курс</option>
+        <option value="4">4 курс</option>
+      </select>
+    </div>
+    <button class="btn btn-primary btn-block" type="submit">Создать профиль</button>
+  </form>
+
+  <p class="auth-alt">Уже есть аккаунт? <a href="{% url 'login' %}">Войти</a></p>
+  <a class="link-back" href="/">← На главную</a>
+</div>
+{% endblock %}

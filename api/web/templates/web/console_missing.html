@@ -1,0 +1,17 @@
+{% extends "web/base.html" %}
+{% block title %}Консоль не собрана — ФинТвин{% endblock %}
+
+{% block content %}
+<div class="console-missing">
+  <h1>Консоль ещё не собрана</h1>
+  <p>
+    Серверная часть работает, но React-бандл не найден в <code>dist/</code>. Соберите его и обновите страницу.
+  </p>
+  <pre>npm install
+npm run build
+.venv\Scripts\python api\manage.py runserver</pre>
+  <p style="margin-top: 18px">
+    <a class="btn btn-primary" href="/">На главную</a>
+  </p>
+</div>
+{% endblock %}
