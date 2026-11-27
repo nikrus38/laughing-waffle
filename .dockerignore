@@ -1,0 +1,17 @@
+node_modules
+.venv
+.git
+.idea
+dist
+api/db.sqlite3
+api/staticfiles
+api/staticfiles/**
+brand
+docs
+examples
+graphify-out
+test-results
+playwright-report
+.playwright-mcp
+.env
+deploy/.env
