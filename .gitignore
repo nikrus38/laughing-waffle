@@ -34,3 +34,7 @@ brand/fa/mascot/*.ai
 .DS_Store
 Thumbs.db
 .idea/
+
+graphify-out/
+
+deploy/.env

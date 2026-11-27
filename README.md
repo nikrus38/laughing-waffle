@@ -12,7 +12,7 @@ Telegram Mini App.
 
 ## Быстрый старт
 
-Нужны Python 3.12+ и Node.js 20+.
+Нужны Python 3.12+ и Node.js 22+.
 
 ```powershell
 python -m venv .venv
@@ -49,6 +49,9 @@ $env:DATABASE_URL = "postgresql://fintwin:password@127.0.0.1:5432/fintwin"
 Поддерживаются `postgresql://`, `postgres://`, `psql://` и параметр `?sslmode=require`.
 Альтернатива — переменные `DB_ENGINE=postgres` + `POSTGRES_*` (см. `.env.example`).
 Драйвер `psycopg` уже в `api/requirements.txt`.
+
+Деплой на VPS с HTTPS и PostgreSQL: [`docs/deploy.md`](docs/deploy.md)
+(Docker Compose + Caddy + DuckDNS).
 
 ## Что внутри
 
