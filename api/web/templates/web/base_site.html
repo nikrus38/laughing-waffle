@@ -146,6 +146,21 @@
         toggle.setAttribute('aria-expanded', 'false');
       }
     });
+
+    // Закрываем меню по клику вне его и по Esc
+    document.addEventListener('click', function (event) {
+      if (mobileNav.hasAttribute('hidden')) return;
+      var target = event.target;
+      if (mobileNav.contains(target) || toggle.contains(target)) return;
+      mobileNav.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      mobileNav.setAttribute('hidden', '');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
   })();
 </script>
 {% block page_scripts %}{% endblock %}

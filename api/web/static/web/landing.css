@@ -279,6 +279,10 @@ p {
   background: var(--surface);
 }
 
+.mobile-nav[hidden] {
+  display: none;
+}
+
 .mobile-nav a {
   min-height: 44px;
   display: flex;
