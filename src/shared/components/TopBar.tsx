@@ -95,47 +95,54 @@ const TopBar: React.FC = () => {
   return (
     <>
       {/* Мобильная шапка: компактная, как в Telegram Mini App */}
-      <header className="sticky top-0 z-20 border-b border-slate-200/70 bg-white/90 px-4 py-2.5 backdrop-blur lg:hidden">
-        <div className="flex items-center justify-between gap-2">
-          <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="На главную">
-            <span
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
-              style={{ background: 'var(--brand)' }}
-              aria-hidden="true"
-            >
-              {initials}
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate text-sm font-semibold text-[color:var(--ink)]">
-                {firstName}
+      <header className="sticky top-0 z-20 bg-white/90 pt-[env(safe-area-inset-top)] backdrop-blur lg:hidden">
+        <div
+          className="h-[2px] w-full"
+          style={{ background: 'linear-gradient(90deg, #233e76 0%, #0198af 100%)' }}
+          aria-hidden="true"
+        />
+        <div className="border-b border-slate-200/70 px-4 py-2.5">
+          <div className="flex items-center justify-between gap-2">
+            <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="На главную">
+              <span
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
+                style={{ background: 'var(--brand)' }}
+                aria-hidden="true"
+              >
+                {initials}
               </span>
-              <span className="block whitespace-nowrap text-[10px] text-[color:var(--ink-muted)]">
-                {user.course} курс · Финуниверситет
+              <span className="min-w-0">
+                <span className="block truncate text-sm font-semibold text-[color:var(--ink)]">
+                  {firstName}
+                </span>
+                <span className="block truncate text-[10px] text-[color:var(--ink-muted)]">
+                  {user.course} курс · Финансовый университет
+                </span>
               </span>
-            </span>
-          </Link>
-
-          <div className="flex shrink-0 items-center gap-1.5">
-            <Link
-              to="/wallet"
-              className="tnum flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold"
-              style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
-              aria-label={`Баланс ${balance} FinCoin`}
-            >
-              <span aria-hidden="true">🪙</span>
-              {balance}
-              <span className="text-[10px] font-medium">FC</span>
             </Link>
 
-            <button
-              type="button"
-              onClick={() => setUserRole(userRole === 'student' ? 'partner' : 'student')}
-              className="min-h-[36px] rounded-full border border-slate-300 px-2.5 text-[11px] font-medium text-slate-700 transition-colors hover:border-[color:var(--brand)] hover:text-[color:var(--brand)]"
-              aria-pressed={userRole === 'partner'}
-              aria-label="Переключить роль: студент или партнёр"
-            >
-              {userRole === 'student' ? 'Студент' : 'Партнёр'}
-            </button>
+            <div className="flex shrink-0 items-center gap-1.5">
+              <Link
+                to="/wallet"
+                className="tnum flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold"
+                style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
+                aria-label={`Баланс ${balance} FinCoin`}
+              >
+                <span aria-hidden="true">🪙</span>
+                {balance}
+                <span className="text-[10px] font-medium">FC</span>
+              </Link>
+
+              <button
+                type="button"
+                onClick={() => setUserRole(userRole === 'student' ? 'partner' : 'student')}
+                className="min-h-[36px] rounded-full border border-slate-300 px-2.5 text-[11px] font-medium text-slate-700 transition-colors hover:border-[color:var(--brand)] hover:text-[color:var(--brand)]"
+                aria-pressed={userRole === 'partner'}
+                aria-label="Переключить роль: студент или партнёр"
+              >
+                {userRole === 'student' ? 'Студент' : 'Партнёр'}
+              </button>
+            </div>
           </div>
         </div>
       </header>

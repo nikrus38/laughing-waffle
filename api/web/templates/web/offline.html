@@ -4,12 +4,28 @@
 
 {% block content %}
 <div class="auth-card">
+  <a class="auth-brand" href="/">
+    <img
+      src="/static/web/brand/icon-192.png"
+      alt=""
+      height="34"
+      width="34"
+    />
+    <span>ФинТвин</span>
+  </a>
+
   <h1>Нет соединения</h1>
   <p class="auth-sub">
-    Приложение открылось из кэша. Часть данных недоступна без сети — например, реестр FinCoin и подбор задач.
+    Приложение открылось из сохранённой оболочки. Баланс, задачи и реестр появятся,
+    когда вернётся сеть — эти данные всегда считаются на сервере.
   </p>
+
+  <div class="notice" style="margin-top: 16px">
+    Пока сети нет, можно открыть уже загруженные экраны. Начисления не выполняются.
+  </div>
+
   <p style="margin-top: 16px">
-    <a class="btn btn-primary btn-block" href="/app/">Попробовать снова</a>
+    <a class="btn btn-primary btn-block" href="/app/">Повторить</a>
   </p>
   <a class="link-back" href="/">← На главную</a>
 </div>

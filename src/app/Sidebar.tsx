@@ -103,9 +103,9 @@ const Sidebar: React.FC = () => {
       {/* Логотип продукта */}
       <div className="flex h-16 shrink-0 items-center gap-2.5 px-5">
         <img
-          src="/static/web/brand/emblem.png"
+          src="/static/web/brand/icon-192.png"
           alt=""
-          className="h-8 w-8 shrink-0 object-contain"
+          className="h-8 w-8 shrink-0 rounded-md object-contain ring-1 ring-slate-200"
         />
         <span className="min-w-0 leading-tight">
           <span className="block text-[15px] font-semibold tracking-tight text-[color:var(--ink)]">

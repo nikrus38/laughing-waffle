@@ -22,7 +22,7 @@ const NavigationBar: React.FC = () => {
       className="fixed bottom-0 left-0 right-0 z-20 border-t border-slate-200 bg-white/95 backdrop-blur"
       aria-label="Основная навигация"
     >
-      <ul className="mx-auto flex max-w-[480px] justify-around">
+      <ul className="mx-auto flex max-w-[480px] justify-around px-1">
         {navigationItems.map(({ to, label, icon: Icon, end }) => (
           <li key={to} className="flex-1">
             <NavLink
@@ -30,15 +30,34 @@ const NavigationBar: React.FC = () => {
               end={end}
               className={({ isActive }) =>
                 [
-                  'flex min-h-[56px] flex-col items-center justify-center gap-1 px-2 py-2 text-[11px] font-medium transition-colors',
-                  isActive ? 'text-[color:var(--brand)]' : 'text-slate-500 hover:text-slate-800',
+                  'relative flex min-h-[58px] flex-col items-center justify-center gap-0.5 px-1 pb-1.5 pt-2 text-[10px] transition-colors',
+                  isActive ? 'font-semibold text-[color:var(--brand)]' : 'font-medium text-slate-500',
                 ].join(' ')
               }
               aria-label={label}
             >
               {({ isActive }) => (
                 <>
-                  <Icon className="h-6 w-6" aria-hidden="true" strokeWidth={isActive ? 2.2 : 1.6} />
+                  <span
+                    className="absolute top-0 h-[2px] w-7 rounded-b-full transition-opacity"
+                    style={{
+                      background: 'var(--brand)',
+                      opacity: isActive ? 1 : 0,
+                    }}
+                    aria-hidden="true"
+                  />
+                  <span
+                    className={[
+                      'flex h-7 w-11 items-center justify-center rounded-full transition-colors',
+                      isActive ? 'bg-[color:var(--brand-soft)]' : '',
+                    ].join(' ')}
+                  >
+                    <Icon
+                      className="h-5 w-5"
+                      aria-hidden="true"
+                      strokeWidth={isActive ? 2.2 : 1.6}
+                    />
+                  </span>
                   <span>{label}</span>
                 </>
               )}
