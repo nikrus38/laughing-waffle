@@ -4,9 +4,11 @@ from .models import (
     Barrier,
     EthicsDecision,
     EthicsRule,
+    Incident,
     LedgerEntry,
     Micromodule,
     PartnerTask,
+    StatusSample,
     TaskApplication,
     Twin,
     Value,
@@ -67,3 +69,25 @@ class EthicsDecisionAdmin(admin.ModelAdmin):
 @admin.register(TaskApplication)
 class TaskApplicationAdmin(admin.ModelAdmin):
     list_display = ("created_at", "user", "task")
+
+
+@admin.register(Incident)
+class IncidentAdmin(admin.ModelAdmin):
+    list_display = ("title", "severity", "component", "started_at", "resolved_at")
+    list_filter = ("severity", "component")
+    date_hierarchy = "started_at"
+
+
+@admin.register(StatusSample)
+class StatusSampleAdmin(admin.ModelAdmin):
+    """Замеры пишутся автоматически: в админке их только смотрят и чистят."""
+
+    list_display = ("created_at", "component", "ok", "latency_ms")
+    list_filter = ("component", "ok")
+    date_hierarchy = "created_at"
+
+    def has_add_permission(self, request) -> bool:
+        return False
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        return False

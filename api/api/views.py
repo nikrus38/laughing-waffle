@@ -387,3 +387,14 @@ def csrf(request):
 @permission_classes([AllowAny])
 def health(request):
     return Response({"status": "ok", "service": "fintwin-api"})
+
+
+@api_view(["GET"])
+@permission_classes([AllowAny])
+def service_status(request):
+    """Срез мониторинга для страницы /status/: живые проверки, uptime, инциденты."""
+    from core.monitoring import collect_status
+
+    response = Response(collect_status())
+    response["Cache-Control"] = "no-store"
+    return response

@@ -21,4 +21,5 @@ urlpatterns = [
     path("demo/reset/", views.demo_reset, name="api-demo-reset"),
     path("csrf/", views.csrf, name="api-csrf"),
     path("health/", views.health, name="api-health"),
+    path("status/", views.service_status, name="api-status"),
 ]

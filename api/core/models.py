@@ -225,3 +225,55 @@ class EthicsDecision(models.Model):
 
     def __str__(self) -> str:
         return f"{self.rule_id}: {self.summary[:60]}"
+
+
+class StatusSample(models.Model):
+    """Замер доступности сервиса.
+
+    Это реальные данные мониторинга, поэтому флага is_mock здесь нет:
+    каждая строка появляется в момент настоящей проверки компонента.
+    """
+
+    component = models.CharField("Компонент", max_length=32, db_index=True)
+    ok = models.BooleanField("Доступен", default=True)
+    latency_ms = models.PositiveIntegerField("Задержка, мс", default=0)
+    created_at = models.DateTimeField("Замер", default=timezone.now, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at"]
+        indexes = [models.Index(fields=["component", "created_at"], name="status_component_time")]
+        verbose_name = "Замер доступности"
+        verbose_name_plural = "Мониторинг доступности"
+
+    def __str__(self) -> str:
+        return f"{self.component}: {'ok' if self.ok else 'fail'} {self.latency_ms}ms"
+
+
+class Incident(models.Model):
+    """Инцидент на странице статуса. Заводится вручную из админки, когда что-то падало."""
+
+    class Severity(models.TextChoices):
+        DEGRADED = "degraded", "Деградация"
+        PARTIAL = "partial", "Частичный отказ"
+        OUTAGE = "outage", "Отказ"
+
+    component = models.CharField("Компонент", max_length=32, blank=True)
+    title = models.CharField("Заголовок", max_length=160)
+    summary = models.TextField("Описание", blank=True)
+    severity = models.CharField(
+        "Уровень", max_length=16, choices=Severity.choices, default=Severity.DEGRADED
+    )
+    started_at = models.DateTimeField("Начало", default=timezone.now)
+    resolved_at = models.DateTimeField("Восстановлено", null=True, blank=True)
+
+    class Meta:
+        ordering = ["-started_at"]
+        verbose_name = "Инцидент"
+        verbose_name_plural = "Инциденты"
+
+    @property
+    def is_open(self) -> bool:
+        return self.resolved_at is None
+
+    def __str__(self) -> str:
+        return self.title

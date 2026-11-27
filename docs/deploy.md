@@ -101,6 +101,34 @@ cat backup-2026-12-01.sql | docker compose -f deploy/docker-compose.yml exec -T 
 
 Раз в неделю копируйте дамп с сервера (`scp`) — этого достаточно для демо.
 
+## 7.1. Мониторинг доступности (страница /status/)
+
+Страница `/status/` показывает живые проверки, uptime за 30 дней и инциденты.
+Замер пишется при открытии страницы, но чтобы история не прерывалась ночью,
+поставьте таймер: он раз в 5 минут дергает `manage.py monitor_ping`.
+
+```bash
+cd /opt/fintwin
+cp deploy/monitor/fintwin-monitor.service /etc/systemd/system/
+cp deploy/monitor/fintwin-monitor.timer /etc/systemd/system/
+systemctl daemon-reload
+systemctl enable --now fintwin-monitor.timer
+
+# проверить, что замер пишется
+systemctl list-timers | grep fintwin
+docker compose -f deploy/docker-compose.yml exec -T web python manage.py monitor_ping
+```
+
+Инциденты заводятся вручную в админке (`/admin/` → «Инциденты»), когда
+компонент действительно падал. Записи старше 90 дней `monitor_ping` удаляет сам.
+
+## 7.2. Страница документации
+
+API-справочник живёт на `/docs/` и собирается из `api/web/api_docs.py`.
+Меняется контракт — правится один файл, страница и оглавление обновляются сами.
+Тест `api/tests/test_status.py` проверяет, что каждый эндпоинт описан,
+а ссылки оглавления ведут на существующие разделы.
+
 ## 8. Что нужно, чтобы деплой выполнил агент
 
 Агент может сам выполнить шаги 2–6 по SSH, если дать ему доступ:

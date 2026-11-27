@@ -1,0 +1,10 @@
+<nav class="docs-nav" aria-label="Содержание документации">
+  {% for group in nav %}
+  <div class="docs-group">
+    <p class="docs-group-title">{{ group.group }}</p>
+    {% for item in group.items %}
+    <a href="#{{ item.id }}" data-doc-link="{{ item.id }}">{{ item.title }}</a>
+    {% endfor %}
+  </div>
+  {% endfor %}
+</nav>

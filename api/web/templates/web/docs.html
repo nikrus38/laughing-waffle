@@ -1,0 +1,377 @@
+{% extends "web/base_site.html" %}
+{% load static %}
+{% block title %}API — документация ФинТвин{% endblock %}
+{% block description %}Справочник API «ФинТвин»: аутентификация, эндпоинты консоли, реестр FinCoin, этические правила и коды ошибок.{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'web/api.css' %}?v=5" />{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>API</span>
+</div>
+
+<div class="docs-shell">
+  <aside class="docs-side">
+    <label class="docs-search">
+      <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <circle cx="9" cy="9" r="6" stroke="currentColor" stroke-width="1.6" />
+        <path d="M13.5 13.5 17 17" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <input type="search" placeholder="Найти раздел" aria-label="Поиск по документации" data-doc-search />
+    </label>
+    {% include "web/_docs_nav.html" %}
+    <p class="docs-group-title" data-doc-empty hidden>Ничего не найдено</p>
+  </aside>
+
+  <main class="docs-main" id="docs-main">
+    <div class="docs-hero">
+      <h1>API «ФинТвин»</h1>
+      <p class="lead">
+        Один JSON-контракт для консоли, сайта и внешних проверок. Сервер считает правила:
+        матчинг, реестр FinCoin, дневные лимиты и этический фильтр.
+      </p>
+      <div class="docs-meta">
+        <span><b>Base URL</b> {{ base_url }}</span>
+        <span><b>Формат</b> JSON, UTF-8</span>
+        <span><b>Версия</b> v1</span>
+        <span><b>Эндпоинтов</b> {{ endpoint_count }}</span>
+      </div>
+    </div>
+
+    <details class="docs-mobile-nav">
+      <summary>Содержание</summary>
+      {% include "web/_docs_nav.html" %}
+    </details>
+
+    <!-- ================= Обзор ================= -->
+    <section class="docs-section" id="overview">
+      <h2>Обзор <a class="anchor" href="#overview" aria-label="Ссылка на раздел">#</a></h2>
+      <p>
+        API обслуживает демонстрационную модель Университета 4.0: цифровой двойник студента,
+        подбор задач партнёров, кошелёк FinCoin и журнал решений ИИ. Все данные вымышленные
+        и помечены полем <code>isMock</code>; реальны только суммы FinCoin и две цифры
+        диагностики — 34,7% и 55%.
+      </p>
+
+      <h3>Как устроен контракт</h3>
+      <ul>
+        <li><strong>Один стартовый запрос.</strong> <code>GET /api/bootstrap/</code> отдаёт всё, что нужно первому экрану консоли, вместо десяти мелких запросов.</li>
+        <li><strong>Действия — командами.</strong> Отклик на задачу, прохождение модуля и начисление монет — отдельные POST-запросы.</li>
+        <li><strong>Правила на сервере.</strong> Процент совпадения, лимиты и цепочка хэшей считаются на бэкенде, фронтенд их только показывает.</li>
+        <li><strong>Детерминизм.</strong> Никаких внешних языковых моделей: одинаковый вход даёт одинаковый ответ, поэтому демо воспроизводимо.</li>
+      </ul>
+
+      <div class="docs-callout">
+        <div>
+          <strong>Демо-режим.</strong> Вход доступен по адресу <a href="{% url 'demo-login' %}">/demo-login/</a>
+          с логином <code>demo</code> и паролем <code>fintwin2026</code>. Это фиксированная вымышленная
+          персона, персональные данные не используются.
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Аутентификация ================= -->
+    <section class="docs-section" id="auth">
+      <h2>Аутентификация <a class="anchor" href="#auth" aria-label="Ссылка на раздел">#</a></h2>
+      <p>
+        Авторизация построена на cookie-сессиях Django. Токенов в заголовке нет: браузер
+        присылает <code>sessionid</code> автоматически. Любой POST или PATCH дополнительно
+        требует CSRF-токен.
+      </p>
+
+      <h3>CSRF</h3>
+      <ul>
+        <li><code>GET /api/csrf/</code> ставит cookie <code>csrftoken</code> и возвращает <code>{"ok": true}</code>.</li>
+        <li>Значение cookie передаётся заголовком <code>X-CSRFToken</code> в каждом небезопасном запросе.</li>
+        <li>Консоль запрашивает токен один раз при старте и обновляет его после входа.</li>
+      </ul>
+
+      <div class="code">
+        <div class="code-bar">
+          <span>HTTP</span>
+          <button class="code-copy" type="button" data-copy>Копировать</button>
+        </div>
+        <pre><code>GET /api/csrf/ HTTP/1.1
+Host: fintwin.duckdns.org
+
+HTTP/1.1 200 OK
+Set-Cookie: csrftoken=Zk3...; Path=/; SameSite=Lax
+Content-Type: application/json
+
+{"ok": true}</code></pre>
+      </div>
+
+      <h3>Telegram Mini App</h3>
+      <p>
+        Внутри Telegram приложение использует ту же cookie-сессию. Подпись <code>initData</code>
+        проверяется серверным модулем <code>core.services.telegram</code> по алгоритму из
+        документации Mini Apps; данные пользователя Telegram не сохраняются. Публичного
+        эндпоинта для обмена <code>initData</code> нет — это осознанное решение демо-версии.
+      </p>
+
+      <div class="docs-callout is-warn">
+        <div>
+          <strong>CORS отключён.</strong> API отвечает только на запросы со своего домена.
+          Внешние клиенты и мобильные приложения не подключаются: это защита демо от сторонних
+          сценариев.
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Быстрый старт ================= -->
+    <section class="docs-section" id="quickstart">
+      <h2>Быстрый старт <a class="anchor" href="#quickstart" aria-label="Ссылка на раздел">#</a></h2>
+      <p>Три шага в терминале: получить cookie, войти демо-студентом, забрать данные.</p>
+
+      <div class="code">
+        <div class="code-bar">
+          <span>bash</span>
+          <button class="code-copy" type="button" data-copy>Копировать</button>
+        </div>
+        <pre><code>{{ quickstart }}</code></pre>
+      </div>
+
+      <p>
+        Ответы приходят в camelCase — так их читает React-консоль без преобразований.
+        Ошибки всегда объект с полем <code>detail</code> или <code>reason</code>.
+      </p>
+    </section>
+
+    <!-- ================= Эндпоинты ================= -->
+    {% for group in groups %}
+    <section class="docs-section" id="{{ group.id }}">
+      <h2>{{ group.title }} <a class="anchor" href="#{{ group.id }}" aria-label="Ссылка на раздел">#</a></h2>
+      <p class="docs-lead">{{ group.lead }}</p>
+
+      {% for item in endpoints %}
+      {% if item.group == group.id %}
+      <article class="endpoint" id="endpoint-{{ item.id }}">
+        <div class="endpoint-head">
+          <span class="method method-{{ item.method|lower }}">{{ item.method }}</span>
+          <span class="endpoint-path">{{ item.path }}</span>
+          <span class="endpoint-title">{{ item.title }}</span>
+        </div>
+
+        <div class="endpoint-body">
+          <p>{{ item.summary }}</p>
+
+          <span class="endpoint-auth">
+            {% if item.auth %}Требуется активная сессия{% else %}Без авторизации{% endif %}
+          </span>
+
+          {% if item.body %}
+          <div class="params">
+            {% for name, kind, required, description in item.body %}
+            <div class="param">
+              <div class="param-head">
+                <code>{{ name }}</code>
+                <span class="param-type">{{ kind }}</span>
+                {% if required == 'да' or required == 'да*' %}
+                <span class="param-req">обязательное</span>
+                {% else %}
+                <span class="param-req is-optional">необязательное</span>
+                {% endif %}
+              </div>
+              <p class="param-desc">{{ description }}</p>
+            </div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          {% if item.request %}
+          <div class="code">
+            <div class="code-bar">
+              <span>Запрос</span>
+              <button class="code-copy" type="button" data-copy>Копировать</button>
+            </div>
+            <pre><code>{{ item.request }}</code></pre>
+          </div>
+          {% endif %}
+
+          <div class="code">
+            <div class="code-bar">
+              <span>Ответ</span>
+              <button class="code-copy" type="button" data-copy>Копировать</button>
+            </div>
+            <pre><code>{{ item.response }}</code></pre>
+          </div>
+
+          {% if item.errors %}
+          <ul>
+            {% for code, text in item.errors %}
+            <li><code>{{ code }}</code> — {{ text }}</li>
+            {% endfor %}
+          </ul>
+          {% endif %}
+        </div>
+      </article>
+      {% endif %}
+      {% endfor %}
+    </section>
+    {% endfor %}
+
+    <!-- ================= Объекты ================= -->
+    <section class="docs-section" id="models">
+      <h2>Объекты <a class="anchor" href="#models" aria-label="Ссылка на раздел">#</a></h2>
+      <p>Шесть сущностей покрывают весь контракт. Названия полей совпадают с React-типами.</p>
+
+      <div class="table-scroll">
+          <table class="error-table">
+        <thead>
+          <tr>
+            <th scope="col">Объект</th>
+            <th scope="col">Ключевые поля</th>
+            <th scope="col">Смысл</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>user</td>
+            <td>id, username, displayName, course, role</td>
+            <td>Учебный профиль. Роль — <code>student</code> или <code>partner</code>.</td>
+          </tr>
+          <tr>
+            <td>twin</td>
+            <td>competencies, interests, weeklyHours, completedModules</td>
+            <td>Восемь компетенций 0–100 в формате <code>{level, target}</code>.</td>
+          </tr>
+          <tr>
+            <td>task</td>
+            <td>id, title, partnerLabel, required, weeks, match</td>
+            <td>Задача партнёра и рассчитанный процент совпадения с объяснением факторов.</td>
+          </tr>
+          <tr>
+            <td>module</td>
+            <td>id, title, minutes, difficulty, gains, valueTags</td>
+            <td>Микромодуль на 15–45 минут с приростом по осям компетенций.</td>
+          </tr>
+          <tr>
+            <td>ledger entry</td>
+            <td>id, ts, action, amount, basis, prevHash, hash</td>
+            <td>Запись реестра FinCoin: сумма, основание и звено цепочки SHA-256.</td>
+          </tr>
+          <tr>
+            <td>ethics decision</td>
+            <td>id, ruleId, considered, rejected, chosen, valueIds</td>
+            <td>Решение ИИ: что рассматривали, что отклонили и какая ценность сработала.</td>
+          </tr>
+        </tbody>
+      </table>
+        </div>
+    </section>
+
+    <!-- ================= Ошибки ================= -->
+    <section class="docs-section" id="errors">
+      <h2>Ошибки <a class="anchor" href="#errors" aria-label="Ссылка на раздел">#</a></h2>
+      <p>Коды стандартные: тело ответа всегда содержит человекочитаемое пояснение.</p>
+
+      <div class="table-scroll">
+          <table class="error-table">
+        <thead>
+          <tr>
+            <th scope="col">Код</th>
+            <th scope="col">Название</th>
+            <th scope="col">Когда возникает</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for code, title, description in error_codes %}
+          <tr>
+            <td>{{ code }}</td>
+            <td>{{ title }}</td>
+            <td>{{ description }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        </div>
+
+      <div class="code">
+        <div class="code-bar">
+          <span>Ответ с ошибкой</span>
+          <button class="code-copy" type="button" data-copy>Копировать</button>
+        </div>
+        <pre><code>HTTP/1.1 400 Bad Request
+Content-Type: application/json
+
+{"ok": false, "reason": "Дневной лимит по этому действию исчерпан."}</code></pre>
+      </div>
+    </section>
+
+    <!-- ================= Лимиты ================= -->
+    <section class="docs-section" id="limits">
+      <h2>Лимиты FinCoin <a class="anchor" href="#limits" aria-label="Ссылка на раздел">#</a></h2>
+      <p>
+        Суммы фиксированы заданием и не меняются через API. Дневной лимит ограничивает
+        число начислений одного типа за календарный день; одно и то же основание нельзя
+        засчитать дважды.
+      </p>
+
+      <div class="table-scroll">
+          <table class="error-table">
+        <thead>
+          <tr>
+            <th scope="col">Действие</th>
+            <th scope="col">Название</th>
+            <th scope="col">FinCoin</th>
+            <th scope="col">В день</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for code, title, amount, limit in coin_actions %}
+          <tr>
+            <td>{{ code }}</td>
+            <td>{{ title }}</td>
+            <td>{{ amount }}</td>
+            <td>{{ limit }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+        </div>
+
+      <div class="docs-callout is-warn">
+        <div>
+          <strong>Зачем лимиты.</strong> Без них баллы можно нафармить активностью, а не вкладом.
+          Правило WALLET-001 требует, чтобы рекомендации опирались на развитие, а не на размер награды.
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Правила и версии ================= -->
+    <section class="docs-section" id="rules">
+      <h2>Правила и версии <a class="anchor" href="#rules" aria-label="Ссылка на раздел">#</a></h2>
+      <ul>
+        <li><strong>Версия контракта v1</strong> от 27 ноября 2026. Идентификаторы задач, модулей и ценностей стабильны.</li>
+        <li><strong>Mock-данные.</strong> Любая вымышленная сущность содержит <code>isMock: true</code>; цифры 34,7% и 55% — единственные реальные показатели.</li>
+        <li><strong>Ценности.</strong> Официальные формулировки не переданы, поэтому поле <code>text</code> равно <code>null</code> и интерфейс показывает «текст уточняется».</li>
+        <li><strong>Доступность.</strong> Живой статус, uptime за 30 дней и инциденты — на странице <a href="/status/">/status/</a> и в <a href="/api/status/">/api/status/</a>.</li>
+      </ul>
+
+      <p class="docs-lead" style="margin-top: 18px">
+        Документация собирается из того же файла, что и карточки эндпоинтов
+        (<code>api/web/api_docs.py</code>), поэтому описание и код меняются вместе.
+      </p>
+    </section>
+  </main>
+
+  <aside class="docs-toc">
+    <p class="docs-toc-title">На этой странице</p>
+    <a href="#overview">Обзор</a>
+    <a href="#auth">Аутентификация</a>
+    <a href="#quickstart">Быстрый старт</a>
+    {% for group in groups %}
+    <a href="#{{ group.id }}">{{ group.title }}</a>
+    {% endfor %}
+    <a href="#models">Объекты</a>
+    <a href="#errors">Ошибки</a>
+    <a href="#limits">Лимиты FinCoin</a>
+    <a href="#rules">Правила и версии</a>
+  </aside>
+</div>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{% static 'web/docs.js' %}?v=2" defer></script>
+{% endblock %}

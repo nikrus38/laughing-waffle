@@ -40,6 +40,7 @@
       <a class="{% if request.path == '/ethics/' %}is-active{% endif %}" href="/ethics/">Этика</a>
       <a class="{% if request.path == '/partners/' %}is-active{% endif %}" href="/partners/">Партнёрам</a>
       <a class="{% if request.path == '/install/' %}is-active{% endif %}" href="/install/">Приложение</a>
+      <a class="{% if request.path == '/docs/' %}is-active{% endif %}" href="/docs/">API</a>
     </nav>
 
     <div class="header-actions">
@@ -63,6 +64,8 @@
     <a href="/ethics/">Этика</a>
     <a href="/partners/">Партнёрам</a>
     <a href="/install/">Приложение</a>
+    <a href="/docs/">Документация API</a>
+    <a href="/status/">Статус API</a>
     <a href="/faq/">Вопросы</a>
     {% if user.is_authenticated %}
       <a class="btn btn-primary" href="/app/">Моя консоль</a>
@@ -105,7 +108,8 @@
       <a href="/app/">Консоль</a>
       <a href="/install/">Приложение</a>
       <a href="/faq/">Вопросы</a>
-      <a href="/api/health/">Статус API</a>
+      <a href="/docs/">Документация API</a>
+      <a href="/status/">Статус API</a>
     </nav>
 
     <div class="footer-col">

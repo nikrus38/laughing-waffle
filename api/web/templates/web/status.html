@@ -1,0 +1,197 @@
+{% extends "web/base_site.html" %}
+{% load static %}
+{% block title %}Статус API — ФинТвин{% endblock %}
+{% block description %}Доступность API, сайта и реестра FinCoin: живые проверки, uptime за 30 дней и история инцидентов.{% endblock %}
+{% block head %}<link rel="stylesheet" href="{% static 'web/api.css' %}?v=5" />{% endblock %}
+
+{% block page %}
+<div class="container breadcrumbs">
+  <a href="/">Главная</a>
+  <span aria-hidden="true">/</span>
+  <span>Статус API</span>
+</div>
+
+<section class="status-hero">
+  <div class="container">
+    <div class="status-banner {% if status.overall == 'degraded' %}is-degraded{% elif status.overall == 'outage' %}is-outage{% endif %}" data-banner>
+      <div class="status-banner-main">
+        <span class="status-signal" aria-hidden="true"></span>
+        <div>
+          <p class="status-kicker">Статус платформы</p>
+          <h1 class="status-title" data-overall>{{ status.overallLabel }}</h1>
+          <p class="status-meta">
+            Проверено <span class="tnum" data-checked>{{ status.generatedAt|slice:"11:16" }}</span> МСК
+            · автообновление каждые 30 секунд
+          </p>
+        </div>
+      </div>
+
+      <div class="status-actions">
+        <button class="btn btn-outline" type="button" data-refresh>
+          Проверить сейчас
+        </button>
+        <a class="btn btn-ghost" href="/api/status/" target="_blank" rel="noopener">JSON-срез</a>
+      </div>
+    </div>
+
+    <div class="status-stats">
+      <div class="status-stat">
+        <p class="status-stat-label">Uptime за 30 дней</p>
+        <p class="status-stat-value tnum" data-uptime>
+          {% if status.uptime.uptime == None %}—{% else %}{{ status.uptime.uptime|floatformat:2 }}<small>%</small>{% endif %}
+        </p>
+      </div>
+      <div class="status-stat">
+        <p class="status-stat-label">Средний ответ API</p>
+        <p class="status-stat-value tnum">
+          {% if status.uptime.avgLatencyMs == None %}—{% else %}{{ status.uptime.avgLatencyMs }}<small>мс</small>{% endif %}
+        </p>
+      </div>
+      <div class="status-stat">
+        <p class="status-stat-label">Проверок за 30 дней</p>
+        <p class="status-stat-value tnum">{{ status.uptime.checks }}</p>
+      </div>
+      <div class="status-stat">
+        <p class="status-stat-label">Наблюдение с</p>
+        <p class="status-stat-value tnum small-value">
+          {% if status.uptime.since %}{{ status.uptime.since|slice:"8:10" }}.{{ status.uptime.since|slice:"5:7" }}.{{ status.uptime.since|slice:"0:4" }}{% else %}—{% endif %}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section-tight">
+  <div class="container">
+    <div class="status-panel">
+      <div class="panel-head">
+        <h2>Доступность по компонентам</h2>
+        <p class="panel-note">Полоска — день. Светлые — периоды без замеров.</p>
+      </div>
+
+      {% for c in status.components %}
+      <div class="uptime-row" data-component="{{ c.code }}">
+        <div class="uptime-name">
+          <span class="uptime-dot {% if not c.ok %}is-down{% endif %}" data-dot aria-hidden="true"></span>
+          <div>
+            <strong>{{ c.name }}</strong>
+            <span>{{ c.description }}</span>
+          </div>
+        </div>
+
+        <div class="uptime-bars" role="img" aria-label="Доступность «{{ c.name }}» за 30 дней">
+          {% for d in c.days %}
+            {% if d.uptime == None %}
+              <span class="bar" title="{{ d.label }} — нет данных" aria-hidden="true"></span>
+            {% elif d.uptime < 90 %}
+              <span class="bar bar--down" title="{{ d.label }} — {{ d.uptime|floatformat:2 }}%" aria-hidden="true"></span>
+            {% elif d.uptime < 99.5 %}
+              <span class="bar bar--warn" title="{{ d.label }} — {{ d.uptime|floatformat:2 }}%" aria-hidden="true"></span>
+            {% else %}
+              <span class="bar bar--ok" title="{{ d.label }} — {{ d.uptime|floatformat:2 }}%" aria-hidden="true"></span>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="uptime-value tnum {% if c.uptime == None %}is-empty{% endif %}" data-component-uptime>
+          {% if c.uptime == None %}нет данных{% else %}{{ c.uptime|floatformat:2 }}%{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+
+      <div class="legend">
+        <span><i class="ok"></i> без ошибок</span>
+        <span><i class="warn"></i> частичные сбои</span>
+        <span><i class="down"></i> отказ</span>
+        <span><i></i> нет данных</span>
+      </div>
+    </div>
+
+    <div class="status-columns">
+      <div class="status-panel">
+        <div class="panel-head">
+          <h2>Время ответа API</h2>
+          <p class="panel-note">Обновляется при каждой проверке</p>
+        </div>
+
+        {% if status.latency|length > 4 %}
+        <div class="latency-chart" role="img" aria-label="График времени ответа API">
+          {% for p in status.latency %}
+            <span
+              class="{% if not p.ok %}is-fail{% endif %}"
+              style="height: {{ p.height }}%"
+              title="{{ p.ts }} — {{ p.latencyMs }} мс"
+            ></span>
+          {% endfor %}
+        </div>
+        <div class="latency-axis">
+          <span>{{ status.latency.0.ts }}</span>
+          <span>сейчас</span>
+        </div>
+        {% else %}
+        <p class="empty-state">
+          График заполняется: он строится по замерам, которые сервер делает каждую минуту.
+          Пока точек мало, смотрите таблицу текущих проверок справа.
+        </p>
+        {% endif %}
+      </div>
+
+      <div class="status-panel">
+        <div class="panel-head">
+          <h2>Текущие проверки</h2>
+          <p class="panel-note">Выполняются при каждом открытии</p>
+        </div>
+
+        <div class="checklist">
+          {% for c in status.components %}
+          <div class="check-row" data-component="{{ c.code }}">
+            <span class="check-state">
+              <span class="pill {% if not c.ok %}is-down{% endif %}" data-state>
+                {% if c.ok %}Работает{% else %}Сбой{% endif %}
+              </span>
+              {{ c.name }}
+            </span>
+            <span class="tnum" data-latency>{% if c.latencyMs %}{{ c.latencyMs }} мс{% else %}меньше 1 мс{% endif %}</span>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="status-panel" style="margin-top: 16px">
+      <div class="panel-head">
+        <h2>Инциденты</h2>
+        <p class="panel-note">Заводится вручную, когда компонент падал</p>
+      </div>
+
+      {% if status.incidents %}
+      <div class="incidents">
+        {% for i in status.incidents %}
+        <div class="incident">
+          <div class="incident-head">
+            <span class="pill {% if i.isOpen %}is-warn{% endif %}">{{ i.severity }}</span>
+            <span>{{ i.title }}</span>
+            <span class="muted small">{{ i.startedAt }}{% if i.resolvedAt %} — {{ i.resolvedAt }}{% else %} — идёт{% endif %}</span>
+          </div>
+          {% if i.summary %}<p>{{ i.summary }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <p class="empty-state">За всё время наблюдения инцидентов не зафиксировано.</p>
+      {% endif %}
+
+      <p class="status-footnote">
+        Данные собираются сервером: каждая проверка — настоящий запрос к базе, реестру и сборке
+        консоли. Пропуски в истории означают, что в этот день замеров не было, а не 100% uptime.
+        Страница обновляется автоматически, есть и машиночитаемый срез —
+        <a href="/api/status/">/api/status/</a>.
+      </p>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block page_scripts %}
+<script src="{% static 'web/status.js' %}?v=2" defer></script>
+{% endblock %}

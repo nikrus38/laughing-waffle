@@ -1,0 +1,9 @@
+[Unit]
+Description=ФинТвин: замер доступности API, базы, реестра и сайта
+Documentation=https://fintwin.duckdns.org/status/
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/fintwin
+ExecStart=/usr/bin/docker compose -f deploy/docker-compose.yml exec -T web python manage.py monitor_ping

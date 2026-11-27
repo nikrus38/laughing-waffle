@@ -54,6 +54,30 @@ def faq_page(request: HttpRequest) -> HttpResponse:
     return render(request, "web/faq.html")
 
 
+def status_page(request: HttpRequest) -> HttpResponse:
+    """Публичная страница статуса: живые проверки, uptime за 30 дней, инциденты."""
+    from core.monitoring import collect_status
+
+    return render(request, "web/status.html", {"status": collect_status()})
+
+
+def docs_page(request: HttpRequest) -> HttpResponse:
+    """Документация API в стиле справочника: навигация и карточки из api_docs."""
+    from web import api_docs
+
+    context = {
+        "nav": api_docs.DOC_NAV,
+        "groups": api_docs.ENDPOINT_GROUPS,
+        "endpoints": api_docs.ENDPOINTS,
+        "base_url": api_docs.BASE_URL,
+        "quickstart": api_docs.QUICKSTART,
+        "coin_actions": api_docs.COIN_ACTIONS,
+        "error_codes": api_docs.ERRORS,
+        "endpoint_count": api_docs.endpoint_count(),
+    }
+    return render(request, "web/docs.html", context)
+
+
 @require_http_methods(["GET", "POST"])
 @ensure_csrf_cookie
 def login_page(request: HttpRequest) -> HttpResponse:

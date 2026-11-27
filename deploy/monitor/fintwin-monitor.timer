@@ -1,0 +1,10 @@
+[Unit]
+Description=ФинТвин: замер доступности каждые 5 минут
+
+[Timer]
+OnBootSec=3min
+OnUnitActiveSec=5min
+Unit=fintwin-monitor.service
+
+[Install]
+WantedBy=timers.target
