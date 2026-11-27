@@ -32,7 +32,7 @@ const InstallPrompt: React.FC = () => {
 
   return (
     <div
-      className="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] left-1/2 z-30 w-[calc(100%-24px)] max-w-[456px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg"
+      className="fixed bottom-[calc(76px+env(safe-area-inset-bottom))] left-1/2 z-30 w-[calc(100%-24px)] max-w-[456px] -translate-x-1/2 rounded-2xl border border-slate-200 bg-white p-3 shadow-lg lg:bottom-6 lg:left-auto lg:right-6 lg:w-[320px] lg:translate-x-0"
       role="region"
       aria-label="Установка приложения"
     >

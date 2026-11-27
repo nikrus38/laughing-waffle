@@ -102,18 +102,18 @@ const Sidebar: React.FC = () => {
     <aside className="fixed inset-y-0 left-0 z-30 hidden w-[272px] flex-col border-r border-slate-200 bg-white lg:flex">
       {/* Логотип продукта */}
       <div className="flex h-16 shrink-0 items-center gap-2.5 px-5">
-        <span
-          className="flex h-8 w-8 items-center justify-center rounded-lg text-[13px] font-bold text-white"
-          style={{ background: 'var(--brand)' }}
-          aria-hidden="true"
-        >
-          Ф
-        </span>
-        <span className="text-[15px] font-semibold tracking-tight text-[color:var(--ink)]">
-          ФинТвин
-        </span>
-        <span className="rounded-full border border-slate-200 px-1.5 py-0.5 text-[9px] font-medium uppercase tracking-wide text-slate-500">
-          console
+        <img
+          src="/static/web/brand/emblem.png"
+          alt=""
+          className="h-8 w-8 shrink-0 object-contain"
+        />
+        <span className="min-w-0 leading-tight">
+          <span className="block text-[15px] font-semibold tracking-tight text-[color:var(--ink)]">
+            ФинТвин
+          </span>
+          <span className="block text-[9px] uppercase tracking-[0.12em] text-slate-500">
+            Финансовый университет
+          </span>
         </span>
       </div>
 

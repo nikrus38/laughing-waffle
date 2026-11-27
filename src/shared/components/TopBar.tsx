@@ -142,6 +142,11 @@ const TopBar: React.FC = () => {
 
       {/* Десктоп: полоса вкладок как в браузере + панель страницы */}
       <header className="console-dark sticky top-0 z-20 hidden lg:block">
+        <div
+          className="h-[3px] w-full"
+          style={{ background: 'linear-gradient(90deg, #233e76 0%, #0198af 100%)' }}
+          aria-hidden="true"
+        />
         <div className="flex items-end gap-1 border-b border-slate-200 bg-[#e9edf3] px-3 pt-2">
           <div className="flex min-w-0 flex-1 items-end gap-1 overflow-x-auto">
             {PRIMARY_TABS.map((tab) => {
