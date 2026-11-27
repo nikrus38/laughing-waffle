@@ -298,9 +298,13 @@ p {
   position: relative;
   padding: 64px 0 40px;
   overflow: hidden;
-  background:
-    radial-gradient(900px 420px at 78% 8%, rgba(15, 155, 142, 0.1), transparent 70%),
-    radial-gradient(700px 380px at 6% 0%, rgba(18, 58, 99, 0.1), transparent 70%);
+  background-color: #f7f9fc;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(35, 62, 118, 0.045) 0 1px,
+    transparent 1px 112px
+  );
+  border-bottom: 1px solid var(--border);
 }
 
 .hero-grid {
@@ -311,27 +315,44 @@ p {
 }
 
 .eyebrow {
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: #016b7a;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #5f6f7e;
   margin-bottom: 14px;
 }
 
+.eyebrow::before {
+  content: '';
+  width: 22px;
+  height: 1px;
+  background: #b9c7d6;
+  flex: 0 0 auto;
+}
+
 .eyebrow-light {
-  color: #7fe3d8;
+  color: #9fe6dc;
+}
+
+.eyebrow-light::before {
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .hero h1 {
-  font-size: clamp(34px, 4.4vw, 54px);
+  font-size: clamp(34px, 4.2vw, 50px);
   letter-spacing: -0.035em;
+  max-width: 620px;
+  text-wrap: balance;
 }
 
 .accent {
-  color: var(--brand);
-  background: linear-gradient(180deg, transparent 62%, rgba(217, 162, 39, 0.35) 62%);
-  padding: 0 4px;
+  color: inherit;
+  background: none;
+  padding: 0;
 }
 
 .lead {
@@ -552,11 +573,7 @@ p {
 }
 
 .glow {
-  position: absolute;
-  inset: 12% -8% -12% 12%;
-  background: radial-gradient(closest-side, rgba(15, 155, 142, 0.22), transparent);
-  filter: blur(24px);
-  z-index: 0;
+  display: none;
 }
 
 /* ---------- Статистика ---------- */
@@ -564,12 +581,11 @@ p {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
-  margin-top: 56px;
-  padding: 22px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  margin-top: 48px;
+  padding: 18px 0;
+  border-top: 1px solid #cbd8e6;
+  border-bottom: 1px solid #cbd8e6;
+  background: transparent;
 }
 
 .stat {
@@ -584,7 +600,7 @@ p {
 .stat strong {
   display: block;
   font-family: var(--font-head);
-  font-size: 26px;
+  font-size: 30px;
   font-weight: 700;
   letter-spacing: -0.03em;
   font-variant-numeric: tabular-nums;
@@ -606,7 +622,7 @@ p {
 
 /* ---------- Секции ---------- */
 .section {
-  padding: 84px 0;
+  padding: 72px 0;
 }
 
 .section-alt {
@@ -697,16 +713,24 @@ p {
 }
 
 .feature {
-  padding: 22px;
+  padding: 20px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   background: var(--surface);
-  transition: border-color 160ms var(--ease), transform 160ms var(--ease);
+  transition: border-color 160ms var(--ease);
+}
+
+.feature::before {
+  content: '';
+  display: block;
+  width: 24px;
+  height: 1px;
+  margin-bottom: 14px;
+  background: #b9c7d6;
 }
 
 .feature:hover {
-  border-color: #c9d6e6;
-  transform: translateY(-2px);
+  border-color: #9fb6cd;
 }
 
 .feature-icon {
@@ -721,7 +745,7 @@ p {
 }
 
 .feature h3 {
-  margin-top: 14px;
+  margin-top: 0;
   font-size: 16px;
 }
 
@@ -1315,17 +1339,15 @@ p {
 .link-card {
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  padding: 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 12px;
   background: var(--surface);
-  transition: border-color 160ms var(--ease), transform 160ms var(--ease), box-shadow 160ms var(--ease);
+  transition: border-color 160ms var(--ease);
 }
 
 .link-card:hover {
-  border-color: #c6d6ea;
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  border-color: #9fb6cd;
 }
 
 .link-icon {
@@ -1340,7 +1362,7 @@ p {
 }
 
 .link-card h3 {
-  margin-top: 12px;
+  margin-top: 0;
   font-size: 16px;
 }
 
@@ -1353,9 +1375,12 @@ p {
 .link-more {
   margin-top: auto;
   padding-top: 14px;
-  font-size: 11.5px;
+  font-size: 12px;
   font-weight: 600;
   color: var(--brand);
+  text-decoration: underline;
+  text-decoration-color: #b9c7d6;
+  text-underline-offset: 3px;
 }
 
 .home-split {

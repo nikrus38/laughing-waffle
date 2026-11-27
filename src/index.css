@@ -48,7 +48,7 @@ h4 {
   font-family: 'Open Sans', 'Golos Text', system-ui, sans-serif;
 }
 
-/* Мягкое появление страницы при переключении вкладок */
+/* Видимый фокус для клавиатуры — на всех интерактивных элементах */
 html body :focus-visible {
   outline: 2px solid var(--brand);
   outline-offset: 2px;
