@@ -37,4 +37,8 @@ Thumbs.db
 
 graphify-out/
 
+# Локальные скиллы и их lock-файл: у каждого своё окружение
+.agents/
+skills-lock.json
+
 deploy/.env
