@@ -6,9 +6,14 @@ import {
   HeartIcon,
   WalletIcon,
   ShieldCheckIcon,
+  Squares2X2Icon,
+  BriefcaseIcon,
+  PuzzlePieceIcon,
+  PlayCircleIcon,
 } from '@heroicons/react/24/outline';
+import { useStore } from '../store/useStore';
 
-const navigationItems = [
+const STUDENT_ITEMS = [
   { to: '/', label: 'Главная', icon: HomeIcon, end: true },
   { to: '/twin', label: 'Двойник', icon: UserIcon, end: false },
   { to: '/matcher', label: 'Матч', icon: HeartIcon, end: false },
@@ -16,14 +21,25 @@ const navigationItems = [
   { to: '/ethics', label: 'Этика', icon: ShieldCheckIcon, end: false },
 ];
 
+const PARTNER_ITEMS = [
+  { to: '/', label: 'Обзор', icon: Squares2X2Icon, end: true },
+  { to: '/partner/tasks', label: 'Задачи', icon: BriefcaseIcon, end: false },
+  { to: '/decomposer', label: 'Кейсы', icon: PuzzlePieceIcon, end: false },
+  { to: '/ethics', label: 'Этика', icon: ShieldCheckIcon, end: false },
+  { to: '/demo', label: 'Защита', icon: PlayCircleIcon, end: false },
+];
+
 const NavigationBar: React.FC = () => {
+  const role = useStore((s) => s.userRole);
+  const items = role === 'partner' ? PARTNER_ITEMS : STUDENT_ITEMS;
+
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-20 border-t border-slate-200 bg-white/95 backdrop-blur"
       aria-label="Основная навигация"
     >
       <ul className="mx-auto flex max-w-[480px] justify-around px-1">
-        {navigationItems.map(({ to, label, icon: Icon, end }) => (
+        {items.map(({ to, label, icon: Icon, end }) => (
           <li key={to} className="flex-1">
             <NavLink
               to={to}

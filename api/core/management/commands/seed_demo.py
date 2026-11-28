@@ -13,10 +13,11 @@ from core.models import (
     EthicsRule,
     Micromodule,
     PartnerTask,
+    TaskApplication,
     Twin,
     Value,
 )
-from core.services.demo import seed_ethics_for, seed_ledger_for
+from core.services.demo import seed_applications_for, seed_ethics_for, seed_ledger_for
 
 
 class Command(BaseCommand):
@@ -30,11 +31,16 @@ class Command(BaseCommand):
         student = self.seed_persona(seed_data.DEMO_STUDENT, User.Role.STUDENT)
         partner = self.seed_persona(seed_data.DEMO_PARTNER, User.Role.PARTNER)
 
+        # Демо-задачи принадлежат партнёру: его кабинет должен быть не пустым.
+        PartnerTask.objects.filter(owner__isnull=True).update(owner=partner)
+
         if options["reset"] or not student.ledger_entries.exists():
             self.seed_ledger(student)
         if options["reset"] or not student.ethics_decisions.exists():
             self.seed_ethics(student)
-
+        if options["reset"] or not TaskApplication.objects.filter(task__owner=partner).exists():
+            self.seed_applications(student, partner)
+        self.seed_applicants(partner)
         self.stdout.write(self.style.SUCCESS("Демо-данные готовы."))
         self.stdout.write(
             f"  Студент: {seed_data.DEMO_STUDENT['username']} / {seed_data.DEMO_STUDENT['password']}"
@@ -151,3 +157,41 @@ class Command(BaseCommand):
 
     def seed_ethics(self, student: User):
         seed_ethics_for(student)
+
+    def seed_applications(self, student: User, partner: User):
+        seed_applications_for(student, partner)
+
+    def seed_applicants(self, partner: User):
+        """Три соискателя для воронки партнёра. Войти под ними нельзя: пароль непригоден."""
+        for item in seed_data.DEMO_APPLICANTS:
+            applicant, created = User.objects.get_or_create(
+                username=item["username"],
+                defaults={
+                    "display_name": item["display_name"],
+                    "course": item["course"],
+                    "role": User.Role.STUDENT,
+                    "email": f"{item['username']}@example.invalid",
+                },
+            )
+            if created:
+                applicant.set_unusable_password()
+                applicant.save(update_fields=["password"])
+
+            Twin.objects.update_or_create(
+                user=applicant,
+                defaults={
+                    "competencies": item["competencies"],
+                    "interests": item["interests"],
+                    "weekly_hours": 12,
+                    "completed_modules": [],
+                    "is_mock": True,
+                },
+            )
+
+            task = PartnerTask.objects.filter(code=item["task"], owner=partner).first()
+            if task is not None:
+                TaskApplication.objects.get_or_create(
+                    user=applicant,
+                    task=task,
+                    defaults={"status": item["status"]},
+                )

@@ -89,6 +89,10 @@ class Micromodule(models.Model):
 
 
 class PartnerTask(models.Model):
+    class Status(models.TextChoices):
+        OPEN = "open", "Набор открыт"
+        CLOSED = "closed", "Набор закрыт"
+
     code = models.CharField("Код", max_length=32, unique=True)
     title = models.CharField("Название", max_length=200)
     partner_label = models.CharField("Партнёр (текстом)", max_length=160)
@@ -97,6 +101,18 @@ class PartnerTask(models.Model):
     difficulty = models.PositiveSmallIntegerField("Сложность 1–5")
     weeks = models.PositiveSmallIntegerField("Недель")
     tags = models.JSONField("Теги", default=list)
+    owner = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="owned_tasks",
+        verbose_name="Автор задачи",
+    )
+    status = models.CharField(
+        "Статус набора", max_length=16, choices=Status.choices, default=Status.OPEN
+    )
+    created_at = models.DateTimeField("Создана", default=timezone.now)
     is_mock = models.BooleanField("Демо-данные", default=True)
 
     class Meta:
@@ -109,9 +125,17 @@ class PartnerTask(models.Model):
 
 
 class TaskApplication(models.Model):
+    class Status(models.TextChoices):
+        NEW = "new", "Новый отклик"
+        SHORTLISTED = "shortlisted", "В шортлисте"
+        INVITED = "invited", "Приглашён"
+        REJECTED = "rejected", "Отклонён"
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="applications")
     task = models.ForeignKey(PartnerTask, on_delete=models.CASCADE, related_name="applications")
+    status = models.CharField("Статус", max_length=16, choices=Status.choices, default=Status.NEW)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         unique_together = ("user", "task")

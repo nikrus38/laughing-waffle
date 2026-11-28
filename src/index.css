@@ -114,6 +114,57 @@ html body :focus-visible {
   transform-origin: top right;
 }
 
+/* Ползунки в форме партнёра: одинаковый вид в Chrome и Firefox */
+.range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 20px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  margin-top: -6px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--brand);
+  box-shadow: 0 1px 2px rgba(11, 31, 58, 0.25);
+}
+
+.range.is-empty::-webkit-slider-thumb {
+  background: #94a3b8;
+}
+
+.range::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: #e2e8f0;
+}
+
+.range::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background: var(--brand);
+  box-shadow: 0 1px 2px rgba(11, 31, 58, 0.25);
+}
+
+.range.is-empty::-moz-range-thumb {
+  background: #94a3b8;
+}
+
 /* ---------- Светлая консоль (десктоп, паттерн dashboard) ---------- */
 .console-dark {
   --dash-bg: #f5f7fa;

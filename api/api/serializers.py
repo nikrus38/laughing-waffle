@@ -1,6 +1,8 @@
 """Преобразование моделей в JSON для фронтенда (camelCase, как в React-типах)."""
 from __future__ import annotations
 
+from django.utils import timezone
+
 from core.services.matching import MatchResult
 
 
@@ -49,8 +51,41 @@ def task_payload(task, match: MatchResult) -> dict:
         "difficulty": task.difficulty,
         "weeks": task.weeks,
         "tags": task.tags,
+        "status": task.status,
         "isMock": task.is_mock,
         "match": match.as_dict(),
+    }
+
+
+def partner_task_payload(task) -> dict:
+    """Задача глазами автора: без матчинга, зато со счётчиком откликов."""
+    return {
+        "id": task.code,
+        "title": task.title,
+        "summary": task.summary,
+        "partnerLabel": task.partner_label,
+        "required": task.required,
+        "difficulty": task.difficulty,
+        "weeks": task.weeks,
+        "tags": task.tags,
+        "status": task.status,
+        "applicationsCount": task.applications.count(),
+        "createdAt": timezone.localtime(task.created_at).strftime("%d.%m.%Y"),
+        "isMock": task.is_mock,
+    }
+
+
+def application_payload(application, match: float | None = None) -> dict:
+    return {
+        "id": application.id,
+        "student": application.user.display_name or application.user.username,
+        "initials": application.user.initials,
+        "course": application.user.course,
+        "taskId": application.task.code,
+        "taskTitle": application.task.title,
+        "status": application.status,
+        "createdAt": timezone.localtime(application.created_at).strftime("%d.%m %H:%M"),
+        "match": round(match, 1) if match is not None else None,
     }
 
 

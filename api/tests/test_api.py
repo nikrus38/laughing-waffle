@@ -138,7 +138,11 @@ def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
 
     twin = Twin.objects.get(user=catalog)
     assert twin.completed_modules == seed_data.DEMO_STUDENT["completed_modules"]
-    assert not TaskApplication.objects.filter(user=catalog).exists()
+    # После сброса остаются только стартовые отклики демо-студента
+    assert (
+        TaskApplication.objects.filter(user=catalog).count()
+        == len(seed_data.STARTER_APPLICATIONS)
+    )
     assert LedgerEntry.objects.filter(user=catalog).count() == len(seed_data.STARTER_LEDGER)
 
     # Сброс не меняет роль: профиль остаётся тем же аккаунтом

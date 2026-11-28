@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import partner_views, views
 
 urlpatterns = [
     path("auth/register/", views.register, name="api-register"),
@@ -22,4 +22,14 @@ urlpatterns = [
     path("csrf/", views.csrf, name="api-csrf"),
     path("health/", views.health, name="api-health"),
     path("status/", views.service_status, name="api-status"),
+    path("partner/overview/", partner_views.overview, name="api-partner-overview"),
+    path("partner/tasks/", partner_views.tasks, name="api-partner-tasks"),
+    path("partner/tasks/<str:code>/", partner_views.task_detail, name="api-partner-task"),
+    path("partner/tasks/<str:code>/status/", partner_views.task_status, name="api-partner-task-status"),
+    path("partner/applications/", partner_views.applications, name="api-partner-applications"),
+    path(
+        "partner/applications/<int:application_id>/",
+        partner_views.application_detail,
+        name="api-partner-application",
+    ),
 ]

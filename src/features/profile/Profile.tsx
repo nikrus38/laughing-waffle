@@ -257,11 +257,13 @@ const Profile: React.FC = () => {
             </div>
           </section>
 
-          <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
-            <div className="flex items-baseline justify-between gap-2">
-              <h2 className="text-sm font-semibold text-[color:var(--ink)]">
-                Интересы для матчинга
-              </h2>
+          {userRole === 'student' && (
+            <>
+              <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h2 className="text-sm font-semibold text-[color:var(--ink)]">
+                    Интересы для матчинга
+                  </h2>
               <span className="tnum text-[10px] text-slate-400">
                 {draft.interests.length} из {INTEREST_LIMIT}
               </span>
@@ -379,11 +381,13 @@ const Profile: React.FC = () => {
               className="mt-4 w-full"
               style={{ accentColor: 'var(--brand)' }}
             />
-            <div className="tnum mt-1 flex justify-between text-[10px] text-slate-400">
-              <span>{HOURS_MIN} ч</span>
-              <span>{HOURS_MAX} ч</span>
-            </div>
-          </section>
+              <div className="tnum mt-1 flex justify-between text-[10px] text-slate-400">
+                <span>{HOURS_MIN} ч</span>
+                <span>{HOURS_MAX} ч</span>
+              </div>
+              </section>
+            </>
+          )}
 
           <section className="mt-4 rounded-2xl border border-slate-200 bg-white p-4">
             <h2 className="text-sm font-semibold text-[color:var(--ink)]">Демо-профиль</h2>

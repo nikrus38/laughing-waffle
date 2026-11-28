@@ -146,6 +146,71 @@ BARRIERS = [
     ("barrier-20", "cultural", "Нет привычки фиксировать авторство идей", "evaluation", 2, "wallet", "Идеи теряются или присваиваются без указания автора."),
 ]
 
+# Стартовые отклики студента на задачи партнёра: кабинет партнёра не должен пустовать.
+STARTER_APPLICATIONS = [
+    ("task-2", "new"),
+    ("task-4", "shortlisted"),
+    ("task-6", "invited"),
+]
+
+# Дополнительные соискатели: без них воронка партнёра выглядит как один студент.
+DEMO_APPLICANTS = [
+    {
+        "username": "applicant-daria",
+        "display_name": "Дарья Волкова",
+        "course": 2,
+        "task": "task-5",
+        "status": "new",
+        "interests": ["риск-аналитика", "данные"],
+        "competencies": {
+            "data": {"level": 55, "target": 75},
+            "code": {"level": 40, "target": 60},
+            "finance": {"level": 65, "target": 80},
+            "comm": {"level": 55, "target": 70},
+            "research": {"level": 50, "target": 70},
+            "entre": {"level": 25, "target": 50},
+            "ai": {"level": 35, "target": 60},
+            "lead": {"level": 40, "target": 60},
+        },
+    },
+    {
+        "username": "applicant-ilya",
+        "display_name": "Илья Морозов",
+        "course": 3,
+        "task": "task-8",
+        "status": "shortlisted",
+        "interests": ["данные", "исследование"],
+        "competencies": {
+            "data": {"level": 65, "target": 80},
+            "code": {"level": 60, "target": 80},
+            "finance": {"level": 45, "target": 65},
+            "comm": {"level": 50, "target": 70},
+            "research": {"level": 65, "target": 80},
+            "entre": {"level": 30, "target": 55},
+            "ai": {"level": 55, "target": 75},
+            "lead": {"level": 45, "target": 65},
+        },
+    },
+    {
+        "username": "applicant-sofya",
+        "display_name": "Софья Лебедева",
+        "course": 2,
+        "task": "task-2",
+        "status": "rejected",
+        "interests": ["финтех", "коммуникация"],
+        "competencies": {
+            "data": {"level": 35, "target": 60},
+            "code": {"level": 25, "target": 50},
+            "finance": {"level": 55, "target": 75},
+            "comm": {"level": 70, "target": 85},
+            "research": {"level": 35, "target": 60},
+            "entre": {"level": 45, "target": 65},
+            "ai": {"level": 25, "target": 50},
+            "lead": {"level": 55, "target": 70},
+        },
+    },
+]
+
 STARTER_LEDGER = [
     ("data_challenge", "Data Challenge: прогноз оттока клиентов (пример задачи)", ["excellence", "innovation"], 12),
     ("mentoring", "Наставничество: модуль по визуализации данных для первокурсников", ["collaboration", "leadership"], 9),

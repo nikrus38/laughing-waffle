@@ -14,11 +14,13 @@ import {
   ChevronUpDownIcon,
   CheckIcon,
   UserCircleIcon,
+  BriefcaseIcon,
+  PlusCircleIcon,
 } from '@heroicons/react/24/outline';
 import ProfileMenu from '../shared/components/ProfileMenu';
 import { useStore } from '../shared/store/useStore';
 
-const GROUPS = [
+const STUDENT_GROUPS = [
   {
     label: 'Workspace',
     hint: 'Рабочее пространство',
@@ -45,6 +47,41 @@ const GROUPS = [
       { to: '/trajectory', label: 'Траектория', icon: MapIcon, end: false },
       { to: '/patents', label: 'Радар патентов', icon: BeakerIcon, end: false },
       { to: '/decomposer', label: 'Декомпозиция', icon: PuzzlePieceIcon, end: false },
+    ],
+  },
+  {
+    label: 'Demo',
+    hint: 'Защита проекта',
+    items: [{ to: '/demo', label: 'Сценарии и защита', icon: PlayCircleIcon, end: false }],
+  },
+];
+
+const PARTNER_GROUPS = [
+  {
+    label: 'Workspace',
+    hint: 'Кабинет партнёра',
+    items: [
+      { to: '/', label: 'Обзор', icon: Squares2X2Icon, end: true },
+      { to: '/partner/tasks', label: 'Мои задачи', icon: BriefcaseIcon, end: false },
+      { to: '/partner/tasks/new', label: 'Новая задача', icon: PlusCircleIcon, end: false },
+    ],
+  },
+  {
+    label: 'Account',
+    hint: 'Личный кабинет',
+    items: [
+      { to: '/profile', label: 'Профиль и настройки', icon: UserCircleIcon, end: false },
+      { to: '/ethics', label: 'Этика ИИ', icon: ShieldCheckIcon, end: false },
+    ],
+  },
+  {
+    label: 'Analytics',
+    hint: 'Данные и аналитика',
+    items: [
+      { to: '/decomposer', label: 'Декомпозиция', icon: PuzzlePieceIcon, end: false },
+      { to: '/diagnostics', label: 'Диагностика', icon: ChartBarIcon, end: false },
+      { to: '/trajectory', label: 'Траектория', icon: MapIcon, end: false },
+      { to: '/patents', label: 'Радар патентов', icon: BeakerIcon, end: false },
     ],
   },
   {
@@ -87,6 +124,8 @@ const Sidebar: React.FC = () => {
       document.removeEventListener('keydown', onKeyDown);
     };
   }, [switcherOpen]);
+
+  const groups = userRole === 'partner' ? PARTNER_GROUPS : STUDENT_GROUPS;
 
   const level = [...LEVELS].reverse().find((item) => balance >= item.min) ?? LEVELS[0]!;
   const next = LEVELS.find((item) => item.min > level.min);
@@ -218,7 +257,7 @@ const Sidebar: React.FC = () => {
 
       {/* Группы разделов */}
       <nav className="mt-4 flex-1 overflow-y-auto px-3 pb-4" aria-label="Разделы консоли">
-        {GROUPS.map((group) => (
+        {groups.map((group) => (
           <div key={group.label} className="mb-5">
             <div className="flex items-center gap-2 px-2 pb-1.5" title={group.hint}>
               <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
@@ -273,30 +312,32 @@ const Sidebar: React.FC = () => {
 
       {/* Сводка и профиль */}
       <div className="shrink-0 border-t border-slate-200 p-3">
-        <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <div className="flex items-baseline justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">
-              FinCoin
-            </span>
-            <span className="text-[10px] text-slate-500">{level.name}</span>
+        {userRole !== 'partner' && (
+          <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div className="flex items-baseline justify-between">
+              <span className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-400">
+                FinCoin
+              </span>
+              <span className="text-[10px] text-slate-500">{level.name}</span>
+            </div>
+            <p className="tnum mt-1 text-lg font-bold text-[color:var(--ink)]">{balance} FC</p>
+            <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+              <div
+                className="h-1.5 rounded-full"
+                style={{
+                  width: `${progress}%`,
+                  background: 'var(--mint)',
+                  transition: 'width 200ms var(--ease)',
+                }}
+              />
+            </div>
+            <p className="mt-1.5 text-[10px] text-slate-500">
+              {next
+                ? `до уровня «${next.name}» — ${Math.max(0, next.min - balance)} FC`
+                : 'максимальный уровень'}
+            </p>
           </div>
-          <p className="tnum mt-1 text-lg font-bold text-[color:var(--ink)]">{balance} FC</p>
-          <div className="mt-1.5 h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
-            <div
-              className="h-1.5 rounded-full"
-              style={{
-                width: `${progress}%`,
-                background: 'var(--mint)',
-                transition: 'width 200ms var(--ease)',
-              }}
-            />
-          </div>
-          <p className="mt-1.5 text-[10px] text-slate-500">
-            {next
-              ? `до уровня «${next.name}» — ${Math.max(0, next.min - balance)} FC`
-              : 'максимальный уровень'}
-          </p>
-        </div>
+        )}
 
         <ProfileMenu
           align="left"

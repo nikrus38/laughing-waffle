@@ -2,12 +2,16 @@ import React, { lazy, Suspense, useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Layout from './Layout';
 import TelegramBridge from './TelegramBridge';
+import { RequirePartner, RequireStudent } from './guards';
 import Home from '../features/home/Home';
 import Twin from '../features/twin/Twin';
 import Matcher from '../features/matcher/Matcher';
 import Wallet from '../features/wallet/Wallet';
 import Ethics from '../features/ethics/Ethics';
 import Profile from '../features/profile/Profile';
+const PartnerHome = lazy(() => import('../features/partner/PartnerHome'));
+const PartnerTasks = lazy(() => import('../features/partner/PartnerTasks'));
+const PartnerTaskForm = lazy(() => import('../features/partner/PartnerTaskForm'));
 const Diagnostics = lazy(() => import('../features/diagnostics/Diagnostics'));
 const Trajectory = lazy(() => import('../features/trajectory/Trajectory'));
 const Decomposer = lazy(() => import('../features/decomposer/Decomposer'));
@@ -54,6 +58,12 @@ const NotFound: React.FC = () => (
   </div>
 );
 
+/** Первый экран зависит от роли: у партнёра свой кабинет, у студента — дашборд. */
+const RoleHome: React.FC = () => {
+  const role = useStore((s) => s.userRole);
+  return role === 'partner' ? <PartnerHome /> : <Home />;
+};
+
 function App() {
   const hydrate = useStore((state) => state.hydrate);
   const isConsole = window.location.pathname.startsWith('/app');
@@ -91,18 +101,69 @@ function App() {
       <Layout>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/twin" element={<Twin />} />
-          <Route path="/matcher" element={<Matcher />} />
-          <Route path="/wallet" element={<Wallet />} />
-          <Route path="/ethics" element={<Ethics />} />
-          <Route path="/profile" element={<Profile />} />
-          <Route path="/diagnostics" element={<Diagnostics />} />
-          <Route path="/trajectory" element={<Trajectory />} />
-          <Route path="/decomposer" element={<Decomposer />} />
-          <Route path="/patents" element={<Patents />} />
-          <Route path="/demo" element={<Demo />} />
-          <Route path="*" element={<NotFound />} />
+            <Route path="/" element={<RoleHome />} />
+            <Route path="/profile" element={<Profile />} />
+
+            {/* Студенческий кабинет */}
+            <Route
+              path="/twin"
+              element={
+                <RequireStudent>
+                  <Twin />
+                </RequireStudent>
+              }
+            />
+            <Route
+              path="/matcher"
+              element={
+                <RequireStudent>
+                  <Matcher />
+                </RequireStudent>
+              }
+            />
+            <Route
+              path="/wallet"
+              element={
+                <RequireStudent>
+                  <Wallet />
+                </RequireStudent>
+              }
+            />
+
+            {/* Кабинет партнёра */}
+            <Route
+              path="/partner/tasks"
+              element={
+                <RequirePartner>
+                  <PartnerTasks />
+                </RequirePartner>
+              }
+            />
+            <Route
+              path="/partner/tasks/new"
+              element={
+                <RequirePartner>
+                  <PartnerTaskForm />
+                </RequirePartner>
+              }
+            />
+            <Route
+              path="/partner/tasks/:code"
+              element={
+                <RequirePartner>
+                  <PartnerTaskForm />
+                </RequirePartner>
+              }
+            />
+
+            {/* Общие разделы */}
+            <Route path="/ethics" element={<Ethics />} />
+            <Route path="/diagnostics" element={<Diagnostics />} />
+            <Route path="/trajectory" element={<Trajectory />} />
+            <Route path="/decomposer" element={<Decomposer />} />
+            <Route path="/patents" element={<Patents />} />
+            <Route path="/demo" element={<Demo />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
       </Layout>

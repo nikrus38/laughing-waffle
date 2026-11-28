@@ -45,7 +45,7 @@ class MicromoduleAdmin(admin.ModelAdmin):
 class TaskApplicationInline(admin.TabularInline):
     model = TaskApplication
     extra = 0
-    fields = ("user", "created_at")
+    fields = ("user", "status", "created_at")
     readonly_fields = ("created_at",)
     verbose_name = "Отклик студента"
     verbose_name_plural = "Отклики студентов"
@@ -53,14 +53,34 @@ class TaskApplicationInline(admin.TabularInline):
 
 @admin.register(PartnerTask)
 class PartnerTaskAdmin(admin.ModelAdmin):
-    list_display = ("code", "title", "partner_label", "difficulty", "weeks", "applications_count")
-    list_filter = ("difficulty",)
+    list_display = (
+        "code",
+        "title",
+        "partner_label",
+        "status",
+        "difficulty",
+        "weeks",
+        "applications_count",
+    )
+    list_filter = ("status", "difficulty")
     search_fields = ("code", "title", "partner_label", "summary")
+    list_editable = ("status",)
     inlines = (TaskApplicationInline,)
+    actions = ("open_tasks", "close_tasks")
 
     @admin.display(description="Откликов")
     def applications_count(self, obj: PartnerTask) -> int:
         return obj.applications.count()
+
+    @admin.action(description="Открыть набор на выбранные задачи")
+    def open_tasks(self, request, queryset):
+        updated = queryset.update(status=PartnerTask.Status.OPEN)
+        self.message_user(request, f"Открыто задач: {updated}")
+
+    @admin.action(description="Закрыть набор на выбранные задачи")
+    def close_tasks(self, request, queryset):
+        updated = queryset.update(status=PartnerTask.Status.CLOSED)
+        self.message_user(request, f"Закрыто задач: {updated}")
 
 
 @admin.register(Twin)
@@ -135,10 +155,26 @@ class EthicsDecisionAdmin(admin.ModelAdmin):
 
 @admin.register(TaskApplication)
 class TaskApplicationAdmin(admin.ModelAdmin):
-    list_display = ("created_at", "user", "task")
-    list_filter = ("created_at", "task")
-    search_fields = ("user__username", "task__title")
+    list_display = ("created_at", "user", "task", "status")
+    list_filter = ("status", "created_at", "task")
+    search_fields = ("user__username", "user__display_name", "task__title")
     date_hierarchy = "created_at"
+    actions = ("shortlist", "invite", "reject")
+
+    @admin.action(description="Перевести в шортлист")
+    def shortlist(self, request, queryset):
+        updated = queryset.update(status=TaskApplication.Status.SHORTLISTED)
+        self.message_user(request, f"В шортлисте: {updated}")
+
+    @admin.action(description="Пригласить на интервью")
+    def invite(self, request, queryset):
+        updated = queryset.update(status=TaskApplication.Status.INVITED)
+        self.message_user(request, f"Приглашено: {updated}")
+
+    @admin.action(description="Отклонить отклик")
+    def reject(self, request, queryset):
+        updated = queryset.update(status=TaskApplication.Status.REJECTED)
+        self.message_user(request, f"Отклонено: {updated}")
 
 
 @admin.register(Incident)

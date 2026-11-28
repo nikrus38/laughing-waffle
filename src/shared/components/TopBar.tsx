@@ -8,6 +8,7 @@ import {
   WalletIcon,
   ShieldCheckIcon,
   PlusIcon,
+  BriefcaseIcon,
   ChartBarIcon,
   BeakerIcon,
   PuzzlePieceIcon,
@@ -26,7 +27,7 @@ interface TabConfig {
   end: boolean;
 }
 
-const PRIMARY_TABS: TabConfig[] = [
+const STUDENT_TABS: TabConfig[] = [
   { to: '/', label: 'Обзор', icon: Squares2X2Icon, accent: '#233e76', soft: '#e6ebf5', end: true },
   { to: '/twin', label: 'Двойник', icon: UserIcon, accent: '#275e9f', soft: '#e7eef8', end: false },
   { to: '/matcher', label: 'Матч', icon: HeartIcon, accent: '#0198af', soft: '#e2f3f6', end: false },
@@ -34,12 +35,27 @@ const PRIMARY_TABS: TabConfig[] = [
   { to: '/ethics', label: 'Этика', icon: ShieldCheckIcon, accent: '#256569', soft: '#e4f0f0', end: false },
 ];
 
-const EXTRA_TABS = [
+const PARTNER_TABS: TabConfig[] = [
+  { to: '/', label: 'Обзор', icon: Squares2X2Icon, accent: '#233e76', soft: '#e6ebf5', end: true },
+  { to: '/partner/tasks', label: 'Мои задачи', icon: BriefcaseIcon, accent: '#275e9f', soft: '#e7eef8', end: false },
+  { to: '/decomposer', label: 'Декомпозиция', icon: PuzzlePieceIcon, accent: '#0198af', soft: '#e2f3f6', end: false },
+  { to: '/ethics', label: 'Этика', icon: ShieldCheckIcon, accent: '#256569', soft: '#e4f0f0', end: false },
+  { to: '/demo', label: 'Защита', icon: PlayCircleIcon, accent: '#b07d0a', soft: '#fdf3dc', end: false },
+];
+
+const STUDENT_EXTRA_TABS = [
   { to: '/diagnostics', label: 'Диагностика', icon: ChartBarIcon },
   { to: '/trajectory', label: 'Траектория', icon: MapIcon },
   { to: '/patents', label: 'Радар патентов', icon: BeakerIcon },
   { to: '/decomposer', label: 'Декомпозиция', icon: PuzzlePieceIcon },
   { to: '/demo', label: 'Сценарии и защита', icon: PlayCircleIcon },
+];
+
+const PARTNER_EXTRA_TABS = [
+  { to: '/partner/tasks/new', label: 'Новая задача', icon: PlusIcon },
+  { to: '/diagnostics', label: 'Диагностика', icon: ChartBarIcon },
+  { to: '/trajectory', label: 'Траектория', icon: MapIcon },
+  { to: '/patents', label: 'Радар патентов', icon: BeakerIcon },
 ];
 
 const PAGE_TITLES: Record<string, { title: string; hint: string }> = {
@@ -54,6 +70,8 @@ const PAGE_TITLES: Record<string, { title: string; hint: string }> = {
   '/decomposer': { title: 'Декомпозиция', hint: 'запрос партнёра → учебные кейсы' },
   '/demo': { title: 'Сценарии и защита', hint: 'демо и таймер' },
   '/profile': { title: 'Профиль и настройки', hint: 'имя, курс, интересы и доступ' },
+  '/partner/tasks': { title: 'Мои задачи', hint: 'задачи партнёра и отклики' },
+  '/partner/tasks/new': { title: 'Новая задача', hint: 'публикация запроса индустрии' },
 };
 
 const TopBar: React.FC = () => {
@@ -90,8 +108,18 @@ const TopBar: React.FC = () => {
     .join('');
 
   const firstName = user.displayName.split(' ')[0] ?? user.displayName;
-  const page = PAGE_TITLES[location.pathname] ?? { title: 'Консоль', hint: 'ФинТвин' };
-  const activeTab = PRIMARY_TABS.find((tab) => tab.to === location.pathname);
+  const isPartner = userRole === 'partner';
+  const primaryTabs = isPartner ? PARTNER_TABS : STUDENT_TABS;
+  const extraTabs = isPartner ? PARTNER_EXTRA_TABS : STUDENT_EXTRA_TABS;
+
+  const page =
+    location.pathname === '/' && isPartner
+      ? { title: 'Обзор партнёра', hint: 'задачи, отклики и спрос на компетенции' }
+      : PAGE_TITLES[location.pathname] ??
+        (location.pathname.startsWith('/partner/tasks/')
+          ? { title: 'Задача партнёра', hint: 'редактирование и требования' }
+          : { title: 'Консоль', hint: 'ФинТвин' });
+  const activeTab = primaryTabs.find((tab) => tab.to === location.pathname);
 
   return (
     <>
@@ -128,16 +156,18 @@ const TopBar: React.FC = () => {
             </ProfileMenu>
 
             <div className="flex shrink-0 items-center gap-1.5">
-              <Link
-                to="/wallet"
-                className="tnum flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold"
-                style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
-                aria-label={`Баланс ${balance} FinCoin`}
-              >
-                <span aria-hidden="true">🪙</span>
-                {balance}
-                <span className="text-[10px] font-medium">FC</span>
-              </Link>
+              {userRole !== 'partner' && (
+                <Link
+                  to="/wallet"
+                  className="tnum flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-semibold"
+                  style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
+                  aria-label={`Баланс ${balance} FinCoin`}
+                >
+                  <span aria-hidden="true">🪙</span>
+                  {balance}
+                  <span className="text-[10px] font-medium">FC</span>
+                </Link>
+              )}
             </div>
           </div>
         </div>
@@ -152,7 +182,7 @@ const TopBar: React.FC = () => {
         />
         <div className="flex items-end gap-1 border-b border-slate-200 bg-[#e9edf3] px-3 pt-2">
           <div className="flex min-w-0 flex-1 items-end gap-1 overflow-x-auto">
-            {PRIMARY_TABS.map((tab) => {
+            {primaryTabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <NavLink
@@ -217,7 +247,7 @@ const TopBar: React.FC = () => {
                 <p className="px-2 pb-1 pt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400">
                   Ещё разделы
                 </p>
-                {EXTRA_TABS.map((tab) => {
+                {extraTabs.map((tab) => {
                   const Icon = tab.icon;
                   return (
                     <Link
@@ -265,15 +295,17 @@ const TopBar: React.FC = () => {
               {userRole === 'student' ? 'Партнёр' : 'Студент'}
             </button>
 
-            <Link
-              to="/wallet"
-              className="tnum flex min-h-[30px] items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold"
-              style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
-            >
-              <span aria-hidden="true">🪙</span>
-              {balance}
-              <span className="text-[9px] font-medium opacity-80">FC</span>
-            </Link>
+            {userRole !== 'partner' && (
+              <Link
+                to="/wallet"
+                className="tnum flex min-h-[30px] items-center gap-1.5 rounded-full px-2.5 text-xs font-semibold"
+                style={{ background: 'var(--gold-soft)', color: '#8a6209' }}
+              >
+                <span aria-hidden="true">🪙</span>
+                {balance}
+                <span className="text-[9px] font-medium opacity-80">FC</span>
+              </Link>
+            )}
 
             <Link
               to="/"

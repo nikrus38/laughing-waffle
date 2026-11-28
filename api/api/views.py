@@ -266,11 +266,20 @@ def tasks(request):
 
 @api_view(["POST"])
 def apply_to_task(request, code: str):
+    if request.user.role == User.Role.PARTNER:
+        return Response(
+            {"detail": "Партнёр публикует задачи и ведёт отклики, а откликается студент."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     task = PartnerTask.objects.filter(code=code).first()
     if task is None:
         return Response({"detail": "Задача не найдена."}, status=404)
 
-    TaskApplication.objects.get_or_create(user=request.user, task=task)
+    if task.status == PartnerTask.Status.CLOSED:
+        return Response({"detail": "Набор на эту задачу закрыт."}, status=400)
+
+    application, _created = TaskApplication.objects.get_or_create(user=request.user, task=task)
     twin = _twin_for(request.user)
     growth = []
     for competency, required in task.required.items():
@@ -292,11 +301,17 @@ def apply_to_task(request, code: str):
         {"week": 3, "text": "Усилить решение, проверить на тестовых примерах, исправить ошибки."},
         {"week": 4, "text": "Оформить результат и защитить его перед партнёром."},
     ]
-    return Response({"ok": True, "plan": plan, "growth": growth})
+    return Response({"ok": True, "plan": plan, "growth": growth, "status": application.status})
 
 
 @api_view(["POST"])
 def complete_module(request, code: str):
+    if request.user.role == User.Role.PARTNER:
+        return Response(
+            {"detail": "Микромодули проходит студент: у партнёра другой кабинет."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     module = Micromodule.objects.filter(code=code).first()
     if module is None:
         return Response({"detail": "Модуль не найден."}, status=404)
@@ -346,6 +361,12 @@ def ledger_list(request):
 
 @api_view(["POST"])
 def ledger_award(request):
+    if request.user.role == User.Role.PARTNER:
+        return Response(
+            {"detail": "FinCoin начисляется студенту за вклад, партнёр его не получает."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
     action = request.data.get("action")
     basis = request.data.get("basis")
     value_ids = request.data.get("valueIds") or []

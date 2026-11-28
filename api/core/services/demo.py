@@ -6,7 +6,7 @@ from datetime import timedelta
 from django.utils import timezone
 
 from core import seed_data
-from core.models import EthicsDecision, LedgerEntry, TaskApplication, Twin
+from core.models import EthicsDecision, LedgerEntry, PartnerTask, TaskApplication, Twin
 from accounts.models import User
 from core.services.ledger import COIN_AMOUNTS, GENESIS_HASH, calculate_hash
 
@@ -50,6 +50,17 @@ def seed_ethics_for(user) -> None:
         )
 
 
+def seed_applications_for(student, partner) -> None:
+    """Стартовые отклики студента: у партнёра на столе всегда есть что смотреть."""
+    TaskApplication.objects.filter(user=student).delete()
+    for code, status_value in seed_data.STARTER_APPLICATIONS:
+        task = PartnerTask.objects.filter(code=code, owner=partner).first()
+        if task is None:
+            task = PartnerTask.objects.filter(code=code).first()
+        if task is not None:
+            TaskApplication.objects.create(user=student, task=task, status=status_value)
+
+
 def reset_demo(user) -> None:
     """Сброс демо: персона возвращается к стартовому состоянию.
 
@@ -84,3 +95,8 @@ def reset_demo(user) -> None:
         },
     )
     TaskApplication.objects.filter(user=user).delete()
+
+    if user.role == User.Role.STUDENT:
+        partner = User.objects.filter(username=seed_data.DEMO_PARTNER["username"]).first()
+        if partner is not None:
+            seed_applications_for(user, partner)
