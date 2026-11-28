@@ -9,7 +9,7 @@ from .models import User
 class UserAdmin(BaseUserAdmin):
     """Пользователи демо: студент и партнёр — разные аккаунты."""
 
-    list_display = ("username", "display_name", "course", "role", "balance_column", "is_staff")
+    list_display = ("username", "display_name", "role", "course", "organization", "balance_column", "is_staff")
     list_filter = ("role", "course", "is_staff", "is_active")
     search_fields = ("username", "display_name", "email")
     ordering = ("username",)

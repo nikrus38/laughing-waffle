@@ -25,6 +25,7 @@ const PartnerHome: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [filter, setFilter] = useState<ApplicationStatus | 'all'>('all');
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -41,6 +42,12 @@ const PartnerHome: React.FC = () => {
   useEffect(() => {
     void load();
   }, [load]);
+
+  const visibleApplications = useMemo(
+    () =>
+      (data?.applications ?? []).filter((item) => filter === 'all' || item.status === filter),
+    [data, filter],
+  );
 
   const demandMax = useMemo(
     () => Math.max(1, ...(data?.demand.map((item) => item.count) ?? [1])),
@@ -153,6 +160,26 @@ const PartnerHome: React.FC = () => {
         ))}
       </div>
 
+      {(data.attention.newApplications > 0 || data.attention.tasksWithoutApplications > 0) && (
+        <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-xl border border-[color:var(--gold-soft)] bg-[color:var(--gold-soft)]/50 px-3 py-2 text-[11px] text-[#8a6209]">
+          <span className="font-semibold">Требует внимания</span>
+          {data.attention.newApplications > 0 && (
+            <button
+              type="button"
+              onClick={() => setFilter('new')}
+              className="underline-offset-2 hover:underline"
+            >
+              {data.attention.newApplications} новых откликов
+            </button>
+          )}
+          {data.attention.tasksWithoutApplications > 0 && (
+            <Link to="/partner/tasks" className="underline-offset-2 hover:underline">
+              {data.attention.tasksWithoutApplications} задач без откликов
+            </Link>
+          )}
+        </div>
+      )}
+
       <div className="mt-4 grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_296px]">
         <section className="min-w-0 rounded-2xl border border-slate-200 bg-white">
           <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
@@ -166,16 +193,39 @@ const PartnerHome: React.FC = () => {
             </Link>
           </div>
 
-          {data.applications.length === 0 ? (
+          <div className="flex flex-wrap gap-1.5 border-b border-slate-100 px-4 py-2">
+            {(['all', ...STATUS_ORDER] as Array<ApplicationStatus | 'all'>).map((status) => (
+              <button
+                key={status}
+                type="button"
+                onClick={() => setFilter(status)}
+                aria-pressed={filter === status}
+                className={[
+                  'min-h-[30px] rounded-full px-2.5 text-[10px] font-medium transition-colors',
+                  filter === status
+                    ? 'bg-[color:var(--brand-soft)] text-[color:var(--brand)]'
+                    : 'text-slate-500 hover:bg-slate-100',
+                ].join(' ')}
+              >
+                {status === 'all' ? 'Все' : APPLICATION_STATUS_LABELS[status]}
+              </button>
+            ))}
+          </div>
+
+          {visibleApplications.length === 0 ? (
             <div className="px-4 py-10 text-center">
-              <p className="text-sm font-medium text-[color:var(--ink)]">Откликов пока нет</p>
+              <p className="text-sm font-medium text-[color:var(--ink)]">
+                {filter === 'all' ? 'Откликов пока нет' : 'В этом статусе пусто'}
+              </p>
               <p className="mx-auto mt-1 max-w-xs text-xs text-slate-500">
-                Опубликуйте задачу — студенты увидят её в ИИ-свате и смогут откликнуться.
+                {filter === 'all'
+                  ? 'Опубликуйте задачу — студенты увидят её в ИИ-свате и смогут откликнуться.'
+                  : 'Смените фильтр или вернитесь к откликам с другим статусом.'}
               </p>
             </div>
           ) : (
             <ul>
-              {data.applications.map((application) => (
+              {visibleApplications.map((application) => (
                 <li
                   key={application.id}
                   className="flex flex-wrap items-center gap-3 border-b border-slate-100 px-4 py-3 last:border-0"
@@ -289,6 +339,18 @@ const PartnerHome: React.FC = () => {
                   </dd>
                 </div>
               ))}
+              <div className="flex items-center justify-between gap-2 border-t border-slate-100 pt-1.5">
+                <dt className="text-slate-500">Средний матч</dt>
+                <dd className="tnum font-semibold text-[color:var(--ink)]">
+                  {data.stats.avgMatch === null ? '—' : `${data.stats.avgMatch}%`}
+                </dd>
+              </div>
+              <div className="flex items-center justify-between gap-2">
+                <dt className="text-slate-500">Приглашены</dt>
+                <dd className="tnum font-semibold text-[color:var(--ink)]">
+                  {data.stats.invitedShare}%
+                </dd>
+              </div>
             </dl>
             <p className="mt-3 border-t border-slate-100 pt-2 text-[10px] leading-snug text-slate-500">
               Статус отклика — это решение партнёра, а не оценка студента. Платформа показывает

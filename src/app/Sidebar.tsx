@@ -102,6 +102,7 @@ const Sidebar: React.FC = () => {
   const user = useStore((s) => s.user);
   const balance = useStore((s) => s.finCoinBalance);
   const mode = useStore((s) => s.mode);
+  const account = useStore((s) => s.account);
   const userRole = useStore((s) => s.userRole);
 
   const [switcherOpen, setSwitcherOpen] = useState(false);
@@ -179,7 +180,9 @@ const Sidebar: React.FC = () => {
               {userRole === 'student' ? 'Личное пространство' : 'Пространство партнёра'}
             </span>
             <span className="block truncate text-[10px] text-slate-500">
-              {user.displayName} · {user.course} курс
+              {userRole === 'partner'
+                ? account.organization || user.displayName
+                : `${user.displayName} · ${user.course} курс`}
             </span>
           </span>
           <ChevronUpDownIcon className="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true" />
@@ -357,7 +360,9 @@ const Sidebar: React.FC = () => {
               {user.displayName}
             </span>
             <span className="block text-[10px] text-slate-500">
-              {user.course} курс · {mode === 'server' ? 'сервер' : 'демо-режим'}
+              {userRole === 'partner'
+                ? `${account.organization || 'партнёр'} · ${mode === 'server' ? 'сервер' : 'демо-режим'}`
+                : `${user.course} курс · ${mode === 'server' ? 'сервер' : 'демо-режим'}`}
             </span>
           </span>
           <ChevronUpDownIcon className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />

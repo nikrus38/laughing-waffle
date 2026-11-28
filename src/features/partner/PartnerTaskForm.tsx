@@ -2,7 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeftIcon, PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
 import { partnerApi } from './api';
-import type { TaskDraft } from './types';
+import {
+  APPLICATION_STATUS_LABELS,
+  STATUS_ORDER,
+  type ApplicationStatus,
+  type PartnerApplication,
+  type TaskDraft,
+} from './types';
 
 const COMPETENCIES: Array<{ id: string; label: string }> = [
   { id: 'data', label: 'Данные' },
@@ -37,6 +43,8 @@ const PartnerTaskForm: React.FC = () => {
   const [loading, setLoading] = useState(Boolean(code));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [applications, setApplications] = useState<PartnerApplication[]>([]);
+  const [busyApplication, setBusyApplication] = useState<number | null>(null);
 
   useEffect(() => {
     if (!code) return;
@@ -65,6 +73,28 @@ const PartnerTaskForm: React.FC = () => {
       cancelled = true;
     };
   }, [code]);
+
+  useEffect(() => {
+    if (!code) return;
+    partnerApi
+      .applicationsFor(code)
+      .then((payload) => setApplications(payload.applications))
+      .catch(() => setApplications([]));
+  }, [code]);
+
+  const changeApplication = async (id: number, status: ApplicationStatus) => {
+    setBusyApplication(id);
+    try {
+      await partnerApi.setApplicationStatus(id, status);
+      setApplications((current) =>
+        current.map((item) => (item.id === id ? { ...item, status } : item)),
+      );
+    } catch {
+      setError('?????? ??????? ?? ??????????.');
+    } finally {
+      setBusyApplication(null);
+    }
+  };
 
   const titleError = draft.title.trim().length > 0 && draft.title.trim().length < 5;
   const summaryError = draft.summary.trim().length > 0 && draft.summary.trim().length < 20;
@@ -369,6 +399,70 @@ const PartnerTaskForm: React.FC = () => {
             </Link>
           </div>
         </section>
+
+        {code && (
+          <section className="mt-4 rounded-2xl border border-slate-200 bg-white">
+            <div className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-3">
+              <h2 className="text-sm font-semibold text-[color:var(--ink)]">Отклики на задачу</h2>
+              <span className="tnum text-[11px] text-slate-500">{applications.length}</span>
+            </div>
+
+            {applications.length === 0 ? (
+              <p className="px-4 py-6 text-[11.5px] text-slate-500">
+                Пока никто не откликнулся. Задача видна студентам в ИИ-свате, пока набор открыт.
+              </p>
+            ) : (
+              <ul>
+                {applications.map((application) => (
+                  <li
+                    key={application.id}
+                    className="flex flex-wrap items-center gap-3 border-b border-slate-100 px-4 py-2.5 last:border-0"
+                  >
+                    <span
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
+                      style={{ background: 'linear-gradient(135deg, #233e76, #0198af)' }}
+                      aria-hidden="true"
+                    >
+                      {application.initials}
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-xs font-semibold text-[color:var(--ink)]">
+                        {application.student}
+                      </p>
+                      <p className="text-[10.5px] text-slate-500">
+                        {application.course} курс · {application.createdAt}
+                      </p>
+                    </div>
+                    <span
+                      className="tnum rounded-lg px-2 py-1 text-[11px] font-semibold"
+                      style={{ background: 'var(--mint-soft)', color: '#056a78' }}
+                    >
+                      {application.match === null ? '—' : `${application.match}%`}
+                    </span>
+                    <select
+                      value={application.status}
+                      disabled={busyApplication === application.id}
+                      onChange={(event) =>
+                        void changeApplication(
+                          application.id,
+                          event.target.value as ApplicationStatus,
+                        )
+                      }
+                      aria-label={`Статус отклика: ${application.student}`}
+                      className="min-h-[34px] rounded-lg border border-slate-300 bg-white px-2 text-[11px] text-slate-700 disabled:opacity-50"
+                    >
+                      {STATUS_ORDER.map((status) => (
+                        <option key={status} value={status}>
+                          {APPLICATION_STATUS_LABELS[status]}
+                        </option>
+                      ))}
+                    </select>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        )}
 
         <aside className="lg:sticky lg:top-[112px]">
           <p className="mb-2 text-[11px] font-medium text-slate-500">Как увидят студенты</p>

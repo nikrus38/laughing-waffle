@@ -140,20 +140,33 @@ def overview(request):
         by_status[item["status"]] = item["total"]
 
     difficulty = round(sum(task.difficulty for task in tasks) / len(tasks), 1) if tasks else 0
+    application_payloads = [s.application_payload(item, _match_for(item)) for item in applications]
+    matches = [item["match"] for item in application_payloads if item["match"] is not None]
+    total_applications = sum(by_status.values())
 
     return Response(
         {
             "stats": {
                 "tasks": len(tasks),
                 "openTasks": sum(1 for task in tasks if task.status == PartnerTask.Status.OPEN),
-                "applications": sum(by_status.values()),
+                "applications": total_applications,
                 "students": len({item.user_id for item in applications}),
                 "difficulty": difficulty,
+                "avgMatch": round(sum(matches) / len(matches), 1) if matches else None,
+                "invitedShare": round(by_status["invited"] / total_applications * 100)
+                if total_applications
+                else 0,
+            },
+            "attention": {
+                "newApplications": by_status["new"],
+                "tasksWithoutApplications": sum(
+                    1 for task in tasks if task.applications.count() == 0
+                ),
             },
             "byStatus": by_status,
             "demand": demand_list,
             "tasks": [s.partner_task_payload(task) for task in tasks],
-            "applications": [s.application_payload(item, _match_for(item)) for item in applications],
+            "applications": application_payloads,
             "competencies": [{"id": code, "label": label} for code, label in COMPETENCY_CHOICES],
         }
     )
@@ -174,7 +187,7 @@ def tasks(request):
 
     task = PartnerTask.objects.create(
         code=_next_code(),
-        partner_label=(request.user.display_name or "Партнёр (пример)")[:160],
+        partner_label=(request.user.organization or request.user.display_name or "Партнёр (пример)")[:160],
         owner=request.user,
         is_mock=True,
         **fields,

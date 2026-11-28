@@ -14,6 +14,8 @@ class User(AbstractUser):
         "Курс", choices=[(1, "1 курс"), (2, "2 курс"), (3, "3 курс"), (4, "4 курс")], default=1
     )
     role = models.CharField("Роль", max_length=16, choices=Role.choices, default=Role.STUDENT)
+    organization = models.CharField("Организация партнёра", max_length=120, blank=True)
+    position = models.CharField("Должность партнёра", max_length=120, blank=True)
 
     class Meta:
         verbose_name = "Пользователь"

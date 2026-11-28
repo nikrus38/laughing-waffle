@@ -155,6 +155,11 @@ def me(request):
             user.display_name = name
             user_changed = True
         if "course" in data:
+            if user.role == User.Role.PARTNER:
+                return Response(
+                    {"detail": "У партнёра нет курса: вместо него укажите организацию."},
+                    status=400,
+                )
             try:
                 course = int(data["course"])
             except (TypeError, ValueError):
@@ -162,6 +167,12 @@ def me(request):
             if course not in (1, 2, 3, 4):
                 return Response({"detail": "Курс должен быть 1–4."}, status=400)
             user.course = course
+            user_changed = True
+        if "organization" in data:
+            user.organization = str(data["organization"]).strip()[:120]
+            user_changed = True
+        if "position" in data:
+            user.position = str(data["position"]).strip()[:120]
             user_changed = True
         if "role" in data:
             if data["role"] not in dict(User.Role.choices):

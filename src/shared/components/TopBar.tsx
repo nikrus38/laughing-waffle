@@ -78,6 +78,7 @@ const TopBar: React.FC = () => {
   const user = useStore((s) => s.user);
   const balance = useStore((s) => s.finCoinBalance);
   const userRole = useStore((s) => s.userRole);
+  const account = useStore((s) => s.account);
   const location = useLocation();
 
   const [plusOpen, setPlusOpen] = useState(false);
@@ -150,7 +151,9 @@ const TopBar: React.FC = () => {
                   {firstName}
                 </span>
                 <span className="block truncate text-[10px] text-[color:var(--ink-muted)]">
-                  {user.course} курс · Финансовый университет
+                  {isPartner
+                    ? account.organization || 'Партнёр организации'
+                    : `${user.course} курс · Финансовый университет`}
                 </span>
               </span>
             </ProfileMenu>

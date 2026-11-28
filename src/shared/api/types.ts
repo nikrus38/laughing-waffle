@@ -18,6 +18,8 @@ export interface BootstrapPayload {
     initials: string;
     course: 1 | 2 | 3 | 4;
     role: 'student' | 'partner';
+    organization?: string;
+    position?: string;
   };
   balance: number;
   twin: {

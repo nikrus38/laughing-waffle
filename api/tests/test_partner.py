@@ -164,3 +164,44 @@ def test_partner_edits_own_task(partner_client):
     task.refresh_from_db()
     assert task.title == "Новое название задачи"
     assert task.weeks == 9
+
+
+@pytest.mark.django_db
+def test_partner_profile_uses_organization_instead_of_course(partner_client):
+    response = partner_client.patch(
+        "/api/me/",
+        data={"organization": "??????-???????? (??????)", "position": "???????????? ??????"},
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+
+    user = response.json()["user"]
+    assert user["organization"] == "??????-???????? (??????)"
+    assert user["position"] == "???????????? ??????"
+
+
+@pytest.mark.django_db
+def test_partner_cannot_change_course(partner_client):
+    response = partner_client.patch("/api/me/", data={"course": 2}, content_type="application/json")
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_overview_reports_pipeline_metrics_and_attention(partner_client):
+    data = partner_client.get("/api/partner/overview/").json()
+
+    assert data["stats"]["avgMatch"] is not None
+    assert 0 <= data["stats"]["invitedShare"] <= 100
+    assert data["attention"]["newApplications"] >= 1
+    assert "tasksWithoutApplications" in data["attention"]
+
+
+@pytest.mark.django_db
+def test_new_task_uses_organization_as_partner_label(partner_client):
+    response = partner_client.post(
+        "/api/partner/tasks/", data=TASK_PAYLOAD, content_type="application/json"
+    )
+    assert response.status_code == 201
+
+    task = PartnerTask.objects.get(code=response.json()["task"]["id"])
+    assert task.partner_label == "Крупный банк (пример)"

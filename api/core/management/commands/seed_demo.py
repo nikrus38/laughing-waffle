@@ -123,6 +123,8 @@ class Command(BaseCommand):
                 "course": data["course"],
                 "email": f"{data['username']}@example.invalid",
                 "role": role,
+                "organization": data.get("organization", ""),
+                "position": data.get("position", ""),
             },
         )
         if created:
@@ -131,7 +133,9 @@ class Command(BaseCommand):
         else:
             person.display_name = person.display_name or data["display_name"]
             person.role = role
-            person.save(update_fields=["display_name", "role"])
+            person.organization = data.get("organization", person.organization)
+            person.position = data.get("position", person.position)
+            person.save(update_fields=["display_name", "role", "organization", "position"])
 
         Twin.objects.update_or_create(
             user=person,

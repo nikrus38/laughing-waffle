@@ -1,5 +1,11 @@
 import { api } from '../../shared/api/client';
-import type { ApplicationStatus, PartnerOverview, PartnerTask, TaskDraft } from './types';
+import type {
+  ApplicationStatus,
+  PartnerApplication,
+  PartnerOverview,
+  PartnerTask,
+  TaskDraft,
+} from './types';
 
 /** Тонкая обёртка над JSON API: кабинет партнёра не дублирует обработку ошибок. */
 
@@ -22,4 +28,9 @@ export const partnerApi = {
 
   setApplicationStatus: (id: number, status: ApplicationStatus) =>
     api.patch<{ application: unknown }>(`/api/partner/applications/${id}/`, { status }),
+
+  applicationsFor: (code: string) =>
+    api.get<{ applications: PartnerApplication[] }>(
+      `/api/partner/applications/?task=${encodeURIComponent(code)}`,
+    ),
 };

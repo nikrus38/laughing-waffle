@@ -32,7 +32,9 @@ const draftFromStore = (
   course: Course,
   interests: string[],
   weeklyHours: number,
-): ProfileDraft => ({ displayName, course, interests: [...interests], weeklyHours });
+  organization = '',
+  position = '',
+): ProfileDraft => ({ displayName, course, interests: [...interests], weeklyHours, organization, position });
 
 const inputClass =
   'min-h-[44px] w-full rounded-xl border border-slate-300 bg-white px-3 text-sm text-[color:var(--ink)] transition-colors placeholder:text-slate-400 focus:border-[color:var(--brand)] focus:outline-none focus:ring-2 focus:ring-[color:var(--brand)]/15';
@@ -46,7 +48,14 @@ const Profile: React.FC = () => {
   const updateProfile = useStore((s) => s.updateProfile);
 
   const [saved, setSaved] = useState<ProfileDraft>(() =>
-    draftFromStore(user.displayName, user.course, user.interests, user.weeklyHours),
+    draftFromStore(
+      user.displayName,
+      user.course,
+      user.interests,
+      user.weeklyHours,
+      account.organization,
+      account.position,
+    ),
   );
   const [draft, setDraft] = useState<ProfileDraft>(saved);
   const [interestInput, setInterestInput] = useState('');
@@ -115,14 +124,24 @@ const Profile: React.FC = () => {
       course: draft.course,
       interests: draft.interests,
       weeklyHours: clampHours(draft.weeklyHours),
+      organization: (draft.organization ?? '').trim(),
+      position: (draft.position ?? '').trim(),
     };
 
-    const result = await updateProfile({
-      displayName: next.displayName,
-      course: next.course,
-      interests: next.interests,
-      weeklyHours: next.weeklyHours,
-    });
+    const result = await updateProfile(
+      userRole === 'partner'
+        ? {
+            displayName: next.displayName,
+            organization: next.organization,
+            position: next.position,
+          }
+        : {
+            displayName: next.displayName,
+            course: next.course,
+            interests: next.interests,
+            weeklyHours: next.weeklyHours,
+          },
+    );
 
     if (!result.ok) {
       setState('error');
@@ -180,8 +199,9 @@ const Profile: React.FC = () => {
                   {normalizeName(draft.displayName) || 'Без имени'}
                 </p>
                 <p className="text-xs text-slate-500">
-                  {draft.course} курс ·{' '}
-                  {userRole === 'student' ? 'студент' : 'партнёр и кафедра'}
+                  {userRole === 'student'
+                    ? `${draft.course} курс · студент`
+                    : (draft.organization ?? '').trim() || 'партнёр и кафедра'}
                 </p>
               </div>
             </div>
@@ -224,37 +244,81 @@ const Profile: React.FC = () => {
               </p>
             </div>
 
-            <div className="border-t border-slate-100 p-4">
-              <span className="block text-xs font-semibold text-slate-700">Курс</span>
-              <div
-                className="mt-1.5 inline-flex rounded-xl border border-slate-200 bg-slate-50 p-0.5"
-                role="group"
-                aria-label="Курс обучения"
-              >
-                {COURSES.map((course) => {
-                  const active = draft.course === course;
-                  return (
-                    <button
-                      key={course}
-                      type="button"
-                      onClick={() => patch({ course })}
-                      aria-pressed={active}
-                      className={[
-                        'min-h-[38px] min-w-[46px] rounded-[10px] px-3 text-xs font-semibold transition-colors',
-                        active
-                          ? 'bg-white text-[color:var(--brand)] shadow-sm ring-1 ring-slate-200'
-                          : 'text-slate-500 hover:text-[color:var(--ink)]',
-                      ].join(' ')}
-                    >
-                      {course}
-                    </button>
-                  );
-                })}
+            {userRole === 'student' ? (
+              <div className="border-t border-slate-100 p-4">
+                <span className="block text-xs font-semibold text-slate-700">Курс</span>
+                <div
+                  className="mt-1.5 inline-flex rounded-xl border border-slate-200 bg-slate-50 p-0.5"
+                  role="group"
+                  aria-label="Курс обучения"
+                >
+                  {COURSES.map((course) => {
+                    const active = draft.course === course;
+                    return (
+                      <button
+                        key={course}
+                        type="button"
+                        onClick={() => patch({ course })}
+                        aria-pressed={active}
+                        className={[
+                          'min-h-[38px] min-w-[46px] rounded-[10px] px-3 text-xs font-semibold transition-colors',
+                          active
+                            ? 'bg-white text-[color:var(--brand)] shadow-sm ring-1 ring-slate-200'
+                            : 'text-slate-500 hover:text-[color:var(--ink)]',
+                        ].join(' ')}
+                      >
+                        {course}
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="mt-1.5 text-[11px] text-slate-500">
+                  Курс влияет на то, какие кейсы предлагает декомпозиция задач.
+                </p>
               </div>
-              <p className="mt-1.5 text-[11px] text-slate-500">
-                Курс влияет на то, какие кейсы предлагает декомпозиция задач.
-              </p>
-            </div>
+            ) : (
+              <div className="border-t border-slate-100 p-4">
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="profile-organization"
+                      className="block text-xs font-semibold text-slate-700"
+                    >
+                      Организация
+                    </label>
+                    <input
+                      id="profile-organization"
+                      type="text"
+                      value={draft.organization ?? ''}
+                      maxLength={120}
+                      onChange={(event) => patch({ organization: event.target.value })}
+                      placeholder="Крупный банк (пример)"
+                      className={[inputClass, 'mt-1.5'].join(' ')}
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="profile-position"
+                      className="block text-xs font-semibold text-slate-700"
+                    >
+                      Должность
+                    </label>
+                    <input
+                      id="profile-position"
+                      type="text"
+                      value={draft.position ?? ''}
+                      maxLength={120}
+                      onChange={(event) => patch({ position: event.target.value })}
+                      placeholder="Руководитель направления"
+                      className={[inputClass, 'mt-1.5'].join(' ')}
+                    />
+                  </div>
+                </div>
+                <p className="mt-1.5 text-[11px] text-slate-500">
+                  Эти данные видит вуз в ваших задачах. У партнёра нет курса — есть организация.
+                </p>
+              </div>
+            )}
           </section>
 
           {userRole === 'student' && (
@@ -486,23 +550,38 @@ const Profile: React.FC = () => {
                   {normalizeName(draft.displayName) || 'Без имени'}
                 </span>
                 <span className="block truncate text-[10px] text-slate-500">
-                  {draft.course} курс · Финансовый университет
+                  {userRole === 'student'
+                    ? `${draft.course} курс · Финансовый университет`
+                    : (draft.organization ?? '').trim() || 'Партнёр организации'}
                 </span>
               </span>
             </div>
 
             <dl className="mt-3 space-y-2 text-[11px]">
-              <div className="flex items-start justify-between gap-3">
-                <dt className="text-slate-500">Интересы</dt>
-                <dd className="text-right font-medium text-[color:var(--ink)]">
-                  {draft.interests.length > 0 ? draft.interests.slice(0, 3).join(', ') : '—'}
-                  {draft.interests.length > 3 && ` +${draft.interests.length - 3}`}
-                </dd>
-              </div>
-              <div className="flex items-center justify-between gap-3">
-                <dt className="text-slate-500">Часы в неделю</dt>
-                <dd className="tnum font-medium text-[color:var(--ink)]">{draft.weeklyHours} ч</dd>
-              </div>
+              {userRole === 'student' ? (
+                <>
+                  <div className="flex items-start justify-between gap-3">
+                    <dt className="text-slate-500">Интересы</dt>
+                    <dd className="text-right font-medium text-[color:var(--ink)]">
+                      {draft.interests.length > 0 ? draft.interests.slice(0, 3).join(', ') : '—'}
+                      {draft.interests.length > 3 && ` +${draft.interests.length - 3}`}
+                    </dd>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <dt className="text-slate-500">Часы в неделю</dt>
+                    <dd className="tnum font-medium text-[color:var(--ink)]">
+                      {draft.weeklyHours} ч
+                    </dd>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-start justify-between gap-3">
+                  <dt className="text-slate-500">Должность</dt>
+                  <dd className="text-right font-medium text-[color:var(--ink)]">
+                    {(draft.position ?? '').trim() || '—'}
+                  </dd>
+                </div>
+              )}
               <div className="flex items-center justify-between gap-3">
                 <dt className="text-slate-500">Профиль</dt>
                 <dd className="font-medium text-[color:var(--ink)]">

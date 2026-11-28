@@ -18,6 +18,9 @@ export interface ProfileDraft {
   course: Course;
   interests: string[];
   weeklyHours: number;
+  /** ?????? ??? ????????: ? ???? ??? ?????, ???? ???? ??????????? ? ?????????. */
+  organization?: string;
+  position?: string;
 }
 
 /** Схлопывает лишние пробелы: «  Иван   Соколов » → «Иван Соколов». */
@@ -83,6 +86,8 @@ export function isDraftDirty(draft: ProfileDraft, saved: ProfileDraft): boolean 
     normalizeName(draft.displayName) !== normalizeName(saved.displayName) ||
     draft.course !== saved.course ||
     draft.weeklyHours !== saved.weeklyHours ||
+    (draft.organization ?? '') !== (saved.organization ?? '') ||
+    (draft.position ?? '') !== (saved.position ?? '') ||
     draft.interests.length !== saved.interests.length ||
     draft.interests.some((item, index) => item !== saved.interests[index])
   );

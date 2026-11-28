@@ -219,6 +219,8 @@ export interface ProfileUpdate {
   role?: 'student' | 'partner';
   interests?: string[];
   weeklyHours?: number;
+  organization?: string;
+  position?: string;
 }
 
 interface AppState {
@@ -229,7 +231,7 @@ interface AppState {
   setUser: (user: StudentTwin) => void;
 
   /** Логин для блока «Аккаунт»: в демо это фиксированная персона. */
-  account: { username: string };
+  account: { username: string; organization: string; position: string };
   updateProfile: (patch: ProfileUpdate) => Promise<{ ok: boolean; reason?: string }>;
 
   finCoinBalance: number;
@@ -289,7 +291,7 @@ export const useStore = create<AppState>((set, get) => ({
   user: mockStudent,
   setUser: (user) => set({ user }),
 
-  account: { username: 'demo' },
+  account: { username: 'demo', organization: '', position: '' },
   updateProfile: async (patch) => {
     const { mode, user, userRole } = get();
 
@@ -302,7 +304,7 @@ export const useStore = create<AppState>((set, get) => ({
       }
     }
 
-    set({
+    set((state) => ({
       user: {
         ...user,
         displayName: patch.displayName ?? user.displayName,
@@ -310,8 +312,13 @@ export const useStore = create<AppState>((set, get) => ({
         interests: patch.interests ?? user.interests,
         weeklyHours: patch.weeklyHours ?? user.weeklyHours,
       },
+      account: {
+        ...state.account,
+        organization: patch.organization ?? state.account.organization,
+        position: patch.position ?? state.account.position,
+      },
       userRole: patch.role ?? userRole,
-    });
+    }));
 
     return { ok: true };
   },
@@ -370,7 +377,11 @@ export const useStore = create<AppState>((set, get) => ({
       mode: 'server',
       hydrating: false,
       user: twinFromPayload(payload),
-      account: { username: payload.user.username },
+      account: {
+        username: payload.user.username,
+        organization: payload.user.organization ?? '',
+        position: payload.user.position ?? '',
+      },
       finCoinBalance: payload.balance,
       ledger: payload.ledger,
       availableTasks: tasks,

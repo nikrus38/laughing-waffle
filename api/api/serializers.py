@@ -14,6 +14,8 @@ def user_payload(user) -> dict:
         "initials": user.initials,
         "course": user.course,
         "role": user.role,
+        "organization": user.organization,
+        "position": user.position,
         "isMock": True,
     }
 

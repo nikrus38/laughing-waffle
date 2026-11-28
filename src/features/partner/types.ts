@@ -37,6 +37,12 @@ export interface PartnerOverview {
     applications: number;
     students: number;
     difficulty: number;
+    avgMatch: number | null;
+    invitedShare: number;
+  };
+  attention: {
+    newApplications: number;
+    tasksWithoutApplications: number;
   };
   byStatus: Record<ApplicationStatus, number>;
   demand: Array<{ id: string; label: string; count: number }>;
