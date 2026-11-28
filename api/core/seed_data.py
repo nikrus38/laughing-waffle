@@ -260,6 +260,29 @@ DEMO_STUDENT = {
     "weekly_hours": 20,
 }
 
+# Отдельный демо-профиль партнёра: своя сессия, своё имя и свой кабинет.
+DEMO_PARTNER = {
+    "username": "partner",
+    "password": "fintwin2026",
+    "display_name": "Марина Соколова",
+    "organization": "Крупный банк (пример)",
+    "position": "руководитель направления по работе с вузами",
+    "course": 4,
+    "competencies": {
+        "data": {"level": 60, "target": 80},
+        "code": {"level": 25, "target": 40},
+        "finance": {"level": 75, "target": 90},
+        "comm": {"level": 80, "target": 90},
+        "research": {"level": 45, "target": 60},
+        "entre": {"level": 65, "target": 80},
+        "ai": {"level": 40, "target": 55},
+        "lead": {"level": 70, "target": 85},
+    },
+    "interests": ["риск-аналитика", "данные", "стажировки"],
+    "completed_modules": [],
+    "weekly_hours": 8,
+}
+
 FORECAST = [
     {"name": "Анализ данных", "current": 65, "byYear": [70, 75, 80, 85, 90]},
     {"name": "Искусственный интеллект", "current": 45, "byYear": [50, 55, 62, 68, 74]},

@@ -9,6 +9,11 @@ if [ "${SEED_DEMO:-1}" = "1" ]; then
   python manage.py seed_demo
 fi
 
+if [ -n "${ADMIN_PASSWORD:-}" ]; then
+  echo "Готовим администратора панели..."
+  python manage.py seed_admin
+fi
+
 echo "Собираем статику..."
 python manage.py collectstatic --noinput
 

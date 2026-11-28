@@ -45,9 +45,28 @@ nano deploy/.env
 - `DJANGO_SECRET_KEY` — 50+ случайных символов
   (`python3 -c "import secrets;print(secrets.token_urlsafe(50))"`);
 - `POSTGRES_PASSWORD` — сильный пароль;
+- `ADMIN_USERNAME` и `ADMIN_PASSWORD` — доступ в `/admin/` (создаётся при старте);
 - `SEED_DEMO=1` для демо (на реальном пилоте поставьте `0`).
 
 `.env` в git не попадает — он в `.gitignore`.
+
+## 3.1. Админка и демо-персоны
+
+`seed_demo` создаёт две отдельные персоны: студента `demo` и партнёра `partner`
+(пароль у обеих `fintwin2026`). Переключение между ними — настоящая смена аккаунта:
+`/demo-login/` и `/demo-login/partner/`.
+
+Суперпользователь для `/admin/` создаётся из `ADMIN_PASSWORD` при каждом старте
+контейнера. Сменить пароль на работающем стенде:
+
+```bash
+cd /opt/fintwin
+docker compose -f deploy/docker-compose.yml exec web python manage.py seed_admin \
+  --username admin --password 'новый-пароль'
+```
+
+Пароль админа — единственный секрет, который не лежит в репозитории. Для пилота
+задайте свой, а не значение из примеров.
 
 ## 4. Запуск
 

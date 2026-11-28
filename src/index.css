@@ -97,6 +97,23 @@ html body :focus-visible {
   animation: page-enter 180ms var(--ease);
 }
 
+/* Плашка профиля: появление сверху вниз, без «прыжка» на месте */
+@keyframes menu-pop {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.menu-pop {
+  animation: menu-pop 160ms var(--ease);
+  transform-origin: top right;
+}
+
 /* ---------- Светлая консоль (десктоп, паттерн dashboard) ---------- */
 .console-dark {
   --dash-bg: #f5f7fa;

@@ -133,9 +133,6 @@ def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
     api.post(f"/api/tasks/{task.code}/apply/", data={}, content_type="application/json")
     assert TaskApplication.objects.filter(user=catalog).exists()
 
-    catalog.role = "partner"
-    catalog.save(update_fields=["role"])
-
     response = api.post("/api/demo/reset/", data={}, content_type="application/json")
     assert response.status_code == 200
 
@@ -144,8 +141,27 @@ def test_demo_reset_restores_twin_and_clears_applications(api, catalog):
     assert not TaskApplication.objects.filter(user=catalog).exists()
     assert LedgerEntry.objects.filter(user=catalog).count() == len(seed_data.STARTER_LEDGER)
 
+    # Сброс не меняет роль: профиль остаётся тем же аккаунтом
     catalog.refresh_from_db()
     assert catalog.role == "student"
+
+
+@pytest.mark.django_db
+def test_partner_reset_keeps_role_and_zero_balance(client, catalog):
+    """У партнёра нет FinCoin, и сброс не превращает его в студента."""
+    from core.models import TaskApplication
+
+    partner = User.objects.get(username="partner")
+    client.force_login(partner)
+
+    TaskApplication.objects.create(user=partner, task=PartnerTask.objects.first())
+    response = client.post("/api/demo/reset/", data={}, content_type="application/json")
+    assert response.status_code == 200
+
+    partner.refresh_from_db()
+    assert partner.role == User.Role.PARTNER
+    assert LedgerEntry.objects.filter(user=partner).count() == 0
+    assert not TaskApplication.objects.filter(user=partner).exists()
 
 
 @pytest.mark.django_db
@@ -219,3 +235,46 @@ def test_home_links_to_separate_sections(client):
     html = client.get("/").content.decode()
     for path in ["/features/", "/how/", "/ethics/", "/partners/", "/install/"]:
         assert f'href="{path}"' in html
+
+@pytest.mark.django_db
+def test_me_patch_updates_interests_and_hours(api):
+    response = api.patch(
+        "/api/me/",
+        data={"interests": ["финтех", "данные"], "weeklyHours": 16},
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+
+    twin = response.json()["twin"]
+    assert twin["interests"] == ["финтех", "данные"]
+    assert twin["weeklyHours"] == 16
+
+
+@pytest.mark.django_db
+def test_me_patch_keeps_course_and_role(api):
+    response = api.patch(
+        "/api/me/",
+        data={"course": 3, "role": "partner"},
+        content_type="application/json",
+    )
+    assert response.status_code == 200
+
+    user = response.json()["user"]
+    assert user["course"] == 3
+    assert user["role"] == "partner"
+
+
+@pytest.mark.django_db
+def test_me_patch_rejects_too_many_interests(api):
+    response = api.patch(
+        "/api/me/",
+        data={"interests": ["a", "b", "c", "d", "e", "f", "g", "h", "i"]},
+        content_type="application/json",
+    )
+    assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_me_patch_rejects_bad_course(api):
+    response = api.patch("/api/me/", data={"course": 7}, content_type="application/json")
+    assert response.status_code == 400

@@ -16,6 +16,7 @@ urlpatterns = [
     path("register/", views.register_page, name="register"),
     path("logout/", views.logout_page, name="logout"),
     path("demo-login/", views.demo_login, name="demo-login"),
+    path("demo-login/<str:role>/", views.demo_login, name="demo-login-role"),
     path("manifest.webmanifest", views.manifest, name="manifest"),
     path("sw.js", views.service_worker, name="service-worker"),
     path("offline/", views.offline, name="offline"),

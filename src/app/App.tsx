@@ -7,6 +7,7 @@ import Twin from '../features/twin/Twin';
 import Matcher from '../features/matcher/Matcher';
 import Wallet from '../features/wallet/Wallet';
 import Ethics from '../features/ethics/Ethics';
+import Profile from '../features/profile/Profile';
 const Diagnostics = lazy(() => import('../features/diagnostics/Diagnostics'));
 const Trajectory = lazy(() => import('../features/trajectory/Trajectory'));
 const Decomposer = lazy(() => import('../features/decomposer/Decomposer'));
@@ -95,6 +96,7 @@ function App() {
           <Route path="/matcher" element={<Matcher />} />
           <Route path="/wallet" element={<Wallet />} />
           <Route path="/ethics" element={<Ethics />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/diagnostics" element={<Diagnostics />} />
           <Route path="/trajectory" element={<Trajectory />} />
           <Route path="/decomposer" element={<Decomposer />} />

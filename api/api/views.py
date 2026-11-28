@@ -141,10 +141,19 @@ def logout_view(request):
 @api_view(["GET", "PATCH"])
 def me(request):
     user = request.user
+    twin = _twin_for(user)
+
     if request.method == "PATCH":
         data = request.data
+        user_changed = False
+        twin_changed = []
+
         if "displayName" in data:
-            user.display_name = str(data["displayName"])[:120]
+            name = str(data["displayName"]).strip()[:120]
+            if len(name) < 2:
+                return Response({"detail": "Имя короче двух символов."}, status=400)
+            user.display_name = name
+            user_changed = True
         if "course" in data:
             try:
                 course = int(data["course"])
@@ -153,12 +162,42 @@ def me(request):
             if course not in (1, 2, 3, 4):
                 return Response({"detail": "Курс должен быть 1–4."}, status=400)
             user.course = course
+            user_changed = True
         if "role" in data:
             if data["role"] not in dict(User.Role.choices):
                 return Response({"detail": "Неизвестная роль."}, status=400)
             user.role = data["role"]
-        user.save()
-    twin = _twin_for(user)
+            user_changed = True
+
+        if "interests" in data:
+            raw = data["interests"]
+            if not isinstance(raw, list):
+                return Response({"detail": "Интересы должны быть списком."}, status=400)
+            cleaned: list[str] = []
+            for item in raw:
+                text = str(item).strip()[:32]
+                if text and text not in cleaned:
+                    cleaned.append(text)
+            if len(cleaned) > 8:
+                return Response({"detail": "Не больше 8 интересов."}, status=400)
+            twin.interests = cleaned
+            twin_changed.append("interests")
+
+        if "weeklyHours" in data:
+            try:
+                hours = int(data["weeklyHours"])
+            except (TypeError, ValueError):
+                return Response({"detail": "Часы должны быть числом."}, status=400)
+            if not 1 <= hours <= 40:
+                return Response({"detail": "Часы должны быть от 1 до 40."}, status=400)
+            twin.weekly_hours = hours
+            twin_changed.append("weekly_hours")
+
+        if user_changed:
+            user.save()
+        if twin_changed:
+            twin.save(update_fields=twin_changed)
+
     return Response(
         {
             "user": s.user_payload(user),

@@ -1,13 +1,16 @@
 import { enterDemo, expect, test } from './fixtures';
 
 /**
- * Роль «Партнёр и кафедра»: переключение, декомпозиция своей задачи
- * и полный сброс демо обратно к студенту.
+ * Партнёр — отдельный демо-профиль: своя сессия, своё имя, свой кабинет.
+ * Проверяем переключение, работу декомпозиции и возврат к студенту.
  */
-test('партнёр: роль, своя задача и сброс демо', async ({ page }) => {
+test('партнёр: отдельный профиль, своя задача и возврат к студенту', async ({ page }) => {
   await enterDemo(page);
 
-  await page.getByRole('button', { name: /Переключить роль/ }).click();
+  await page.getByRole('button', { name: 'Меню профиля' }).click();
+  await page.getByRole('menuitem', { name: 'Профиль партнёра' }).click();
+
+  await expect(page).toHaveURL(/\/app\/?$/);
   await expect(page.getByText(/Режим «Партнёр и кафедра»/)).toBeVisible();
 
   await page.goto('/app/decomposer');
@@ -21,7 +24,12 @@ test('партнёр: роль, своя задача и сброс демо', a
 
   await page.goto('/app/demo');
   await page.getByRole('button', { name: 'Сбросить демо' }).click();
-
   await expect(page).toHaveURL(/\/app\/?$/);
-  await expect(page.getByRole('button', { name: /Переключить роль/ })).toContainText('Студент');
+
+  // Сброс не должен выбрасывать из профиля партнёра
+  await expect(page.getByText(/Режим «Партнёр и кафедра»/)).toBeVisible();
+
+  await page.getByRole('button', { name: 'Меню профиля' }).click();
+  await page.getByRole('menuitem', { name: 'Профиль студента' }).click();
+  await expect(page.getByText(/Режим «Партнёр и кафедра»/)).toBeHidden();
 });

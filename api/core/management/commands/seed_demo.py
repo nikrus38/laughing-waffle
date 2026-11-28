@@ -27,14 +27,22 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         self.seed_catalog()
-        student = self.seed_student()
+        student = self.seed_persona(seed_data.DEMO_STUDENT, User.Role.STUDENT)
+        partner = self.seed_persona(seed_data.DEMO_PARTNER, User.Role.PARTNER)
+
         if options["reset"] or not student.ledger_entries.exists():
             self.seed_ledger(student)
         if options["reset"] or not student.ethics_decisions.exists():
             self.seed_ethics(student)
 
         self.stdout.write(self.style.SUCCESS("Демо-данные готовы."))
-        self.stdout.write(f"  Студент: {seed_data.DEMO_STUDENT['username']} / {seed_data.DEMO_STUDENT['password']}")
+        self.stdout.write(
+            f"  Студент: {seed_data.DEMO_STUDENT['username']} / {seed_data.DEMO_STUDENT['password']}"
+        )
+        self.stdout.write(
+            f"  Партнёр: {seed_data.DEMO_PARTNER['username']} / {seed_data.DEMO_PARTNER['password']}"
+        )
+        self.stdout.write(f"  Профиль партнёра: {partner.display_name}")
         self.stdout.write("  Лендинг: /   Консоль: /app/   Админка: /admin/")
 
     def seed_catalog(self):
@@ -100,26 +108,27 @@ class Command(BaseCommand):
                 },
             )
 
-    def seed_student(self) -> User:
-        data = seed_data.DEMO_STUDENT
-        student, created = User.objects.get_or_create(
+    def seed_persona(self, data: dict, role: str) -> User:
+        """Создаёт демо-персону: отдельного пользователя со своим двойником."""
+        person, created = User.objects.get_or_create(
             username=data["username"],
             defaults={
                 "display_name": data["display_name"],
                 "course": data["course"],
-                "email": "demo@example.invalid",
-                "role": User.Role.STUDENT,
+                "email": f"{data['username']}@example.invalid",
+                "role": role,
             },
         )
         if created:
-            student.set_password(data["password"])
-            student.save(update_fields=["password"])
+            person.set_password(data["password"])
+            person.save(update_fields=["password"])
         else:
-            student.display_name = student.display_name or data["display_name"]
-            student.save(update_fields=["display_name"])
+            person.display_name = person.display_name or data["display_name"]
+            person.role = role
+            person.save(update_fields=["display_name", "role"])
 
         Twin.objects.update_or_create(
-            user=student,
+            user=person,
             defaults={
                 "competencies": data["competencies"],
                 "interests": data["interests"],
@@ -128,7 +137,14 @@ class Command(BaseCommand):
                 "is_mock": True,
             },
         )
-        return student
+
+        if role == User.Role.PARTNER:
+            # Партнёр не зарабатывает FinCoin: записи из старых версий демо удаляем.
+            person.ledger_entries.all().delete()
+            person.ethics_decisions.all().delete()
+            person.applications.all().delete()
+
+        return person
 
     def seed_ledger(self, student: User):
         seed_ledger_for(student)

@@ -14,6 +14,7 @@ import {
   MapIcon,
   PlayCircleIcon,
 } from '@heroicons/react/24/outline';
+import ProfileMenu from './ProfileMenu';
 import { useStore } from '../store/useStore';
 
 interface TabConfig {
@@ -52,13 +53,13 @@ const PAGE_TITLES: Record<string, { title: string; hint: string }> = {
   '/patents': { title: 'Радар патентов', hint: 'предиктивная наука' },
   '/decomposer': { title: 'Декомпозиция', hint: 'запрос партнёра → учебные кейсы' },
   '/demo': { title: 'Сценарии и защита', hint: 'демо и таймер' },
+  '/profile': { title: 'Профиль и настройки', hint: 'имя, курс, интересы и доступ' },
 };
 
 const TopBar: React.FC = () => {
   const user = useStore((s) => s.user);
   const balance = useStore((s) => s.finCoinBalance);
   const userRole = useStore((s) => s.userRole);
-  const setUserRole = useStore((s) => s.setUserRole);
   const location = useLocation();
 
   const [plusOpen, setPlusOpen] = useState(false);
@@ -103,7 +104,12 @@ const TopBar: React.FC = () => {
         />
         <div className="border-b border-slate-200/70 px-4 py-2.5">
           <div className="flex items-center justify-between gap-2">
-            <Link to="/" className="flex min-w-0 items-center gap-2.5" aria-label="На главную">
+            <ProfileMenu
+              align="left"
+              placement="down"
+              label="Меню профиля"
+              triggerClassName="flex min-w-0 items-center gap-2.5 rounded-xl py-0.5 pr-1 text-left"
+            >
               <span
                 className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white"
                 style={{ background: 'var(--brand)' }}
@@ -119,7 +125,7 @@ const TopBar: React.FC = () => {
                   {user.course} курс · Финансовый университет
                 </span>
               </span>
-            </Link>
+            </ProfileMenu>
 
             <div className="flex shrink-0 items-center gap-1.5">
               <Link
@@ -132,16 +138,6 @@ const TopBar: React.FC = () => {
                 {balance}
                 <span className="text-[10px] font-medium">FC</span>
               </Link>
-
-              <button
-                type="button"
-                onClick={() => setUserRole(userRole === 'student' ? 'partner' : 'student')}
-                className="min-h-[36px] rounded-full border border-slate-300 px-2.5 text-[11px] font-medium text-slate-700 transition-colors hover:border-[color:var(--brand)] hover:text-[color:var(--brand)]"
-                aria-pressed={userRole === 'partner'}
-                aria-label="Переключить роль: студент или партнёр"
-              >
-                {userRole === 'student' ? 'Студент' : 'Партнёр'}
-              </button>
             </div>
           </div>
         </div>
@@ -259,11 +255,14 @@ const TopBar: React.FC = () => {
 
             <button
               type="button"
-              onClick={() => setUserRole(userRole === 'student' ? 'partner' : 'student')}
-              aria-pressed={userRole === 'partner'}
+              onClick={() =>
+                window.location.assign(userRole === 'student' ? '/demo-login/partner/' : '/demo-login/')
+              }
               className="min-h-[30px] rounded-full border border-slate-300 px-2.5 text-[11px] font-medium text-slate-600 transition-colors hover:border-[color:var(--brand)] hover:text-[color:var(--brand)]"
+              title="Партнёр — отдельный демо-аккаунт"
+              aria-label="Переключить демо-профиль"
             >
-              {userRole === 'student' ? 'Студент' : 'Партнёр'}
+              {userRole === 'student' ? 'Партнёр' : 'Студент'}
             </button>
 
             <Link
@@ -285,14 +284,20 @@ const TopBar: React.FC = () => {
               <ArrowTopRightOnSquareIcon className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
 
-            <Link
-              to="/twin"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-[10px] font-bold text-white"
-              style={{ background: 'linear-gradient(135deg, #233e76, #0198af)' }}
-              aria-label="Профиль цифрового двойника"
+            <ProfileMenu
+              align="right"
+              placement="down"
+              label="Меню профиля"
+              triggerClassName="flex h-8 w-8 items-center justify-center rounded-full text-[10px] font-bold text-white transition-transform hover:scale-[1.05]"
             >
-              {initials}
-            </Link>
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full"
+                style={{ background: 'linear-gradient(135deg, #233e76, #0198af)' }}
+                aria-hidden="true"
+              >
+                {initials}
+              </span>
+            </ProfileMenu>
           </div>
         </div>
       </header>

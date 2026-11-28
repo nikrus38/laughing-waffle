@@ -19,6 +19,8 @@ from core.models import LedgerEntry, Micromodule, PartnerTask, Twin, Value
 
 DEMO_LOGIN = seed_data.DEMO_STUDENT["username"]
 DEMO_PASSWORD = seed_data.DEMO_STUDENT["password"]
+DEMO_PARTNER_LOGIN = seed_data.DEMO_PARTNER["username"]
+DEMO_PARTNER_PASSWORD = seed_data.DEMO_PARTNER["password"]
 
 
 def landing(request: HttpRequest) -> HttpResponse:
@@ -142,10 +144,20 @@ def logout_page(request: HttpRequest) -> HttpResponse:
     return redirect(reverse("landing"))
 
 
-def demo_login(request: HttpRequest) -> HttpResponse:
-    """Быстрый вход для комиссии: фиксированная демо-персона, без персональных данных."""
-    user = authenticate(request, username=DEMO_LOGIN, password=DEMO_PASSWORD)
+def demo_login(request: HttpRequest, role: str = "student") -> HttpResponse:
+    """Быстрый вход для комиссии: две отдельные персоны — студент и партнёр.
+
+    Переключение профиля — это настоящая смена аккаунта, а не флаг в интерфейсе:
+    у партнёра своя сессия, своё имя и свой кабинет.
+    """
+    if role == "partner":
+        username, password = DEMO_PARTNER_LOGIN, DEMO_PARTNER_PASSWORD
+    else:
+        username, password = DEMO_LOGIN, DEMO_PASSWORD
+
+    user = authenticate(request, username=username, password=password)
     if user is not None:
+        logout(request)
         login(request, user)
     return redirect(reverse("console"))
 

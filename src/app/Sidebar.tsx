@@ -13,7 +13,9 @@ import {
   PlayCircleIcon,
   ChevronUpDownIcon,
   CheckIcon,
+  UserCircleIcon,
 } from '@heroicons/react/24/outline';
+import ProfileMenu from '../shared/components/ProfileMenu';
 import { useStore } from '../shared/store/useStore';
 
 const GROUPS = [
@@ -30,6 +32,7 @@ const GROUPS = [
     label: 'Account',
     hint: 'Личный кабинет',
     items: [
+      { to: '/profile', label: 'Профиль и настройки', icon: UserCircleIcon, end: false },
       { to: '/wallet', label: 'Кошелёк FinCoin', icon: WalletIcon, end: false },
       { to: '/ethics', label: 'Этика ИИ', icon: ShieldCheckIcon, end: false },
     ],
@@ -63,7 +66,6 @@ const Sidebar: React.FC = () => {
   const balance = useStore((s) => s.finCoinBalance);
   const mode = useStore((s) => s.mode);
   const userRole = useStore((s) => s.userRole);
-  const setUserRole = useStore((s) => s.setUserRole);
 
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const switcherRef = useRef<HTMLDivElement>(null);
@@ -150,25 +152,32 @@ const Sidebar: React.FC = () => {
             className="absolute left-3 right-3 top-[calc(100%+6px)] z-40 overflow-hidden rounded-xl border border-slate-200 bg-white p-1.5 shadow-xl"
           >
             <p className="px-2 pb-1 pt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-400">
-              Роль в демо
+              Демо-профили
             </p>
             {[
-              { role: 'student' as const, label: 'Студент', hint: 'учёба, задачи, FinCoin' },
-              { role: 'partner' as const, label: 'Партнёр и кафедра', hint: 'задачи и кейсы' },
+              {
+                key: 'student' as const,
+                label: 'Студент',
+                hint: 'Александр Петров · 1 курс',
+                href: '/demo-login/',
+              },
+              {
+                key: 'partner' as const,
+                label: 'Партнёр и кафедра',
+                hint: 'Марина Соколова · Крупный банк (пример)',
+                href: '/demo-login/partner/',
+              },
             ].map((item) => (
-              <button
-                key={item.role}
-                type="button"
-                role="menuitemradio"
-                aria-checked={userRole === item.role}
-                onClick={() => {
-                  setUserRole(item.role);
-                  setSwitcherOpen(false);
-                }}
+              <a
+                key={item.key}
+                href={item.href}
+                role="menuitem"
+                onClick={() => setSwitcherOpen(false)}
+                aria-current={userRole === item.key ? 'true' : undefined}
                 className="flex w-full items-start gap-2 rounded-lg px-2 py-1.5 text-left transition-colors hover:bg-slate-100"
               >
                 <span className="mt-0.5 flex h-4 w-4 items-center justify-center">
-                  {userRole === item.role && (
+                  {userRole === item.key && (
                     <CheckIcon className="h-4 w-4" style={{ color: 'var(--brand)' }} aria-hidden="true" />
                   )}
                 </span>
@@ -178,8 +187,11 @@ const Sidebar: React.FC = () => {
                   </span>
                   <span className="block text-[10px] text-slate-500">{item.hint}</span>
                 </span>
-              </button>
+              </a>
             ))}
+            <p className="px-2 pb-1 pt-1 text-[10px] leading-snug text-slate-400">
+              Это разные аккаунты: переключение входит в выбранный профиль.
+            </p>
 
             <div className="my-1 border-t border-slate-100" />
             <Link
@@ -286,9 +298,11 @@ const Sidebar: React.FC = () => {
           </p>
         </div>
 
-        <Link
-          to="/twin"
-          className="mt-2 flex items-center gap-2.5 rounded-lg px-2 py-2 transition-colors hover:bg-slate-100"
+        <ProfileMenu
+          align="left"
+          placement="up"
+          label="Меню профиля"
+          triggerClassName="mt-2 flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors hover:bg-slate-100"
         >
           <span
             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[10px] font-bold text-white"
@@ -297,7 +311,7 @@ const Sidebar: React.FC = () => {
           >
             {initials}
           </span>
-          <span className="min-w-0">
+          <span className="min-w-0 flex-1">
             <span className="block truncate text-xs font-semibold text-[color:var(--ink)]">
               {user.displayName}
             </span>
@@ -305,7 +319,8 @@ const Sidebar: React.FC = () => {
               {user.course} курс · {mode === 'server' ? 'сервер' : 'демо-режим'}
             </span>
           </span>
-        </Link>
+          <ChevronUpDownIcon className="h-3.5 w-3.5 shrink-0 text-slate-400" aria-hidden="true" />
+        </ProfileMenu>
       </div>
     </aside>
   );

@@ -1,0 +1,65 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static log %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" href="{% static 'admin/css/dashboard.css' %}">{% endblock %}
+{% block coltype %}colMS{% endblock %}
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+{% block nav-breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+  <section class="module" style="margin-bottom: 20px">
+    <h2>Демо-доступ</h2>
+    <div style="display: flex; flex-wrap: wrap; gap: 28px; padding: 12px 14px">
+      <div>
+        <p style="margin: 0 0 4px"><strong>Студент</strong></p>
+        <p style="margin: 0"><code>demo</code> / <code>fintwin2026</code></p>
+        <p style="margin: 4px 0 0"><a href="/demo-login/">войти студентом</a></p>
+      </div>
+      <div>
+        <p style="margin: 0 0 4px"><strong>Партнёр и кафедра</strong></p>
+        <p style="margin: 0"><code>partner</code> / <code>fintwin2026</code></p>
+        <p style="margin: 4px 0 0"><a href="/demo-login/partner/">войти партнёром</a></p>
+      </div>
+      <div>
+        <p style="margin: 0 0 4px"><strong>Публичные страницы</strong></p>
+        <p style="margin: 0">
+          <a href="/status/">Статус API</a> ·
+          <a href="/docs/">Документация</a> ·
+          <a href="/app/">Консоль</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {% include "admin/app_list.html" with app_list=app_list show_changelinks=True %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+<div id="content-related">
+  <div class="module" id="recent-actions-module">
+    <h2>Последние действия</h2>
+    <h3>Мои действия</h3>
+
+    {% get_admin_log 10 as admin_log for_user user %}
+    {% if not admin_log %}
+      <p>Пока пусто.</p>
+    {% else %}
+      <ul class="actionlist">
+        {% for entry in admin_log %}
+          <li class="{% if entry.is_addition %}addlink{% elif entry.is_change %}changelink{% elif entry.is_deletion %}deletelink{% endif %}">
+            {% if entry.is_deletion or not entry.get_admin_url %}
+              {{ entry.object_repr }}
+            {% else %}
+              <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+            {% endif %}
+            <br>
+            <span class="mini quiet">{{ entry.content_type.name }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

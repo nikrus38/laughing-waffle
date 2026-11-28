@@ -212,12 +212,25 @@ export interface AwardResult {
 
 export type AppMode = 'local' | 'server';
 
+/** Что можно изменить в профиле: те же поля принимает PATCH /api/me/. */
+export interface ProfileUpdate {
+  displayName?: string;
+  course?: 1 | 2 | 3 | 4;
+  role?: 'student' | 'partner';
+  interests?: string[];
+  weeklyHours?: number;
+}
+
 interface AppState {
   mode: AppMode;
   hydrating: boolean;
 
   user: StudentTwin;
   setUser: (user: StudentTwin) => void;
+
+  /** Логин для блока «Аккаунт»: в демо это фиксированная персона. */
+  account: { username: string };
+  updateProfile: (patch: ProfileUpdate) => Promise<{ ok: boolean; reason?: string }>;
 
   finCoinBalance: number;
   ledger: LedgerEntry[];
@@ -276,6 +289,33 @@ export const useStore = create<AppState>((set, get) => ({
   user: mockStudent,
   setUser: (user) => set({ user }),
 
+  account: { username: 'demo' },
+  updateProfile: async (patch) => {
+    const { mode, user, userRole } = get();
+
+    if (mode === 'server') {
+      try {
+        await api.patch('/api/me/', patch);
+      } catch (error) {
+        if (error instanceof ApiError) return { ok: false, reason: error.message };
+        return { ok: false, reason: 'Сервер недоступен. Попробуйте ещё раз.' };
+      }
+    }
+
+    set({
+      user: {
+        ...user,
+        displayName: patch.displayName ?? user.displayName,
+        course: patch.course ?? user.course,
+        interests: patch.interests ?? user.interests,
+        weeklyHours: patch.weeklyHours ?? user.weeklyHours,
+      },
+      userRole: patch.role ?? userRole,
+    });
+
+    return { ok: true };
+  },
+
   finCoinBalance: initialBalance,
   ledger: initialLedger,
 
@@ -330,6 +370,7 @@ export const useStore = create<AppState>((set, get) => ({
       mode: 'server',
       hydrating: false,
       user: twinFromPayload(payload),
+      account: { username: payload.user.username },
       finCoinBalance: payload.balance,
       ledger: payload.ledger,
       availableTasks: tasks,
@@ -461,7 +502,7 @@ export const useStore = create<AppState>((set, get) => ({
       try {
         await api.post('/api/demo/reset/', {});
         await get().refresh();
-        set({ onboardingCompleted: true, skippedTaskIds: [], userRole: 'student' });
+        set({ onboardingCompleted: true, skippedTaskIds: [] });
         return;
       } catch {
         /* падаем в локальный сброс ниже */

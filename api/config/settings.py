@@ -27,7 +27,7 @@ if DEBUG and not os.environ.get("DJANGO_ALLOWED_HOSTS"):
     ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
+    "config.apps.FinTwinAdminConfig",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",

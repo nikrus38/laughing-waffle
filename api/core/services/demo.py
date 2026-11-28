@@ -51,25 +51,27 @@ def seed_ethics_for(user) -> None:
 
 
 def reset_demo(user) -> None:
-    """Полный сброс демо: реестр, журнал этики, двойник и отклики."""
-    seed_ledger_for(user)
-    seed_ethics_for(user)
+    """Сброс демо: персона возвращается к стартовому состоянию.
 
-    student = seed_data.DEMO_STUDENT
-    if user.username == student["username"]:
+    Роль не меняется: студент и партнёр — разные аккаунты, и сброс не должен
+    превращать партнёра в студента. Партнёру FinCoin не начисляется.
+    """
+    if user.role == User.Role.PARTNER:
+        LedgerEntry.objects.filter(user=user).delete()
+        EthicsDecision.objects.filter(user=user).delete()
+        partner = seed_data.DEMO_PARTNER
+        competencies = partner["competencies"]
+        interests = partner["interests"]
+        weekly_hours = partner["weekly_hours"]
+        completed = partner["completed_modules"]
+    else:
+        seed_ledger_for(user)
+        seed_ethics_for(user)
+        student = seed_data.DEMO_STUDENT
         competencies = student["competencies"]
         interests = student["interests"]
         weekly_hours = student["weekly_hours"]
         completed = student["completed_modules"]
-    else:
-        # У обычного пользователя не подменяем профиль на демо-студента
-        competencies = {
-            code: {"level": 20, "target": 60}
-            for code in ["data", "code", "finance", "comm", "research", "entre", "ai", "lead"]
-        }
-        interests = []
-        weekly_hours = 12
-        completed = []
 
     Twin.objects.update_or_create(
         user=user,
@@ -82,8 +84,3 @@ def reset_demo(user) -> None:
         },
     )
     TaskApplication.objects.filter(user=user).delete()
-
-    # Демо всегда начинается со студента, даже если до сброса была роль партнёра
-    if user.role != User.Role.STUDENT:
-        user.role = User.Role.STUDENT
-        user.save(update_fields=["role"])
