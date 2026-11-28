@@ -389,6 +389,7 @@ docker compose -f deploy/docker-compose.yml --env-file deploy/.env up -d --build
 | Почему сделано именно так | `docs/decisions.md` |
 | Карта проекта для новичка | `docs/project-map.md` |
 | Сценарий защиты и ответы на вопросы | `docs/defense-script.md` |
+| Презентация для защиты (12 слайдов) | `docs/fintwin-deck.pptx` и `.pdf` |
 | Деплой и эксплуатация | `docs/deploy.md` |
 | Аналитика этапов 1–3 | `docs/stage1-diagnostics.md`, `stage2-trajectory.md`, `stage3-tech.md` |
 | Скриншоты экранов | `docs/screens/` |
